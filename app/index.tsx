@@ -1,8 +1,8 @@
-import { View, Text, Pressable } from 'react-native'
-import React from 'react'
+import { Text, Pressable } from 'react-native'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { router } from 'expo-router';
+import { useAuthStore } from '@/src/stores/authStore';
 
 const index = () => {
 
@@ -10,16 +10,12 @@ const index = () => {
     webClientId: "haha no"
   });
 
-  const signIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo.user)
-      router.navigate(`/(tabs)`)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const signIn = useAuthStore((state)=>state.signIn)
+  const checkIfAlreadySignedIn = useAuthStore((state)=>state.checkIfAlreadySignedIn)
+
+  useEffect(()=>{
+    checkIfAlreadySignedIn()
+  },[])
 
   return (
     <SafeAreaView className='flex-1 justify-center bg-background p-5'>
