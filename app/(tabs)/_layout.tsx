@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { useColorScheme } from 'react-native';
+import { Image, useColorScheme } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -12,6 +12,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#D5FF5F',
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarActiveBackgroundColor:'#1E1E25',
         tabBarInactiveBackgroundColor:'#1E1E25',
         tabBarStyle: {
@@ -25,7 +26,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <Image source={require('../../assets/icons/home.png')} className='w-[25] h-[25]' tintColor={color}/>
           ),
         }}
       />
@@ -34,7 +35,25 @@ export default function TabLayout() {
         options={{
           title: 'Two',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <Image source={require('../../assets/icons/meal.png')} className='w-[30] h-[30]' tintColor={color}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="three"
+        options={{
+          title: 'Three',
+          tabBarIcon: ({ color, focused }) => (
+            <Image source={require('../../assets/icons/stats.png')} className='w-[30] h-[30]' tintColor={color}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="four"
+        options={{
+          title: 'Four',
+          tabBarIcon: ({ color, focused }) => (
+            <Image source={require('../../assets/icons/chat.png')} className='w-[30] h-[30]' tintColor={color}/>
           ),
         }}
       />
