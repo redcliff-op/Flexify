@@ -13,6 +13,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{headerShown:false, animation:'fade_from_bottom'}}/>
         <Stack.Screen name="(tabs)" options={{ headerShown: false, animation:'fade_from_bottom' }} />
+        <Stack.Screen name="profile" options={{ headerShown:false, animation:'ios'}}/>
       </Stack>
     </View>
   )

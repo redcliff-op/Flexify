@@ -1,8 +1,9 @@
 import { useAuthStore } from '@/src/stores/authStore'
 import React from 'react'
-import { Image, ScrollView, Text, View } from 'react-native'
+import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
+import { router } from 'expo-router';
 
 const index = () => {
 
@@ -13,10 +14,17 @@ const index = () => {
       <ScrollView>
         <View className='flex-row justify-between'>
           <View className='flex-row px-2'>
-            <Image
-              source={{ uri: userInfo?.user.photo?.toString() }}
-              className='w-[55] h-[55] rounded-full'
-            />
+            <Pressable
+              className='self-center'
+              onPress={() => {
+                router.navigate(`/profile`)
+              }}
+            >
+              <Image
+                source={{ uri: userInfo?.user.photo?.toString() }}
+                className='w-[55] h-[55] rounded-full'
+              />
+            </Pressable>
             <View className='ml-3'>
               <Text className='text-white text-lg font-bold'>
                 Welcome {userInfo?.user.givenName}!
@@ -26,11 +34,18 @@ const index = () => {
               </Text>
             </View>
           </View>
-          <Image
-            source={require('../../assets/icons/profile.png')}
-            className='self-center w-[25] h-[25]'
-            tintColor={'#D5FF5F'}
-          />
+          <Pressable
+            className='self-center'
+            onPress={() => {
+              router.navigate(`/profile`)
+            }}
+          >
+            <Image
+              source={require('../../assets/icons/profile.png')}
+              className='self-center w-[25] h-[25] mr-2'
+              tintColor={'#D5FF5F'}
+            />
+          </Pressable>
         </View>
         <View
           className=' bg-darkgray mt-5 p-5'
