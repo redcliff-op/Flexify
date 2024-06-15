@@ -1,13 +1,25 @@
 import { useAuthStore } from '@/src/stores/authStore'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
 import { router } from 'expo-router';
+import { useWorkoutStore } from '@/src/stores/workoutStore';
 
 const index = () => {
 
   const userInfo = useAuthStore.getState().userInfo
+  const { steps, caloriesBurnt, startWorkout, stopWorkout } = useWorkoutStore((state) => ({
+    steps: state.steps,
+    caloriesBurnt: state.caloriesBurnt,
+    startWorkout: state.startWorkout,
+    stopWorkout: state.stopWorkout
+  }))
+
+  useEffect(() => {
+    startWorkout()
+    return () => { stopWorkout() }
+  }, [])
 
   return (
     <SafeAreaView className='flex-1 bg-background px-2 py-2 align-middle'>
@@ -53,8 +65,8 @@ const index = () => {
         >
           <Text className='text-white text-lg'>Steps</Text>
           <View className='flex-row justify-between'>
-            <Text className='text-white text-lg font-bold'>10000 <Text className='text-base font-light text-gray-300'>/ 16000</Text></Text>
-            <Progress.Bar progress={11000 / 16000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
+            <Text className='text-white text-lg font-bold'>{steps} <Text className='text-base font-light text-gray-300'>/ 10000</Text></Text>
+            <Progress.Bar progress={steps / 10000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
           </View>
         </View>
         <View
@@ -65,16 +77,16 @@ const index = () => {
           <View className='flex-row justify-between'>
             <View>
               <Text className=' text-gray-300 mt-2'>Steps</Text>
-              <Text className='text-palelime text-lg font-bold'>10000 <Text className='text-base font-light text-palelime'>/ 16000</Text></Text>
+              <Text className='text-palelime text-lg font-bold'>{steps} <Text className='text-base font-light text-palelime'>/ 10000</Text></Text>
               <Text className=' text-gray-300 mt-2'>Calories</Text>
-              <Text className='text-palelime text-lg font-bold'>440 <Text className='text-base font-light text-palelime'>/ 680 Cal</Text></Text>
+              <Text className='text-palelime text-lg font-bold'>{caloriesBurnt} <Text className='text-base font-light text-palelime'>/ 680 Cal</Text></Text>
               <Text className=' text-gray-300 mt-2'>Water</Text>
               <Text className='text-palelime text-lg font-bold'>1.8 <Text className='text-base font-light text-palelime'>/ 2.4 L</Text></Text>
             </View>
             <View className='justify-center'>
-              <Progress.Circle size={150} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={11000 / 16000} color='#D5FF5F' className='self-center' />
-              <Progress.Circle size={110} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={440 / 680} color='#D5FF5F' className='self-center absolute' />
-              <Progress.Circle size={70} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={1.8 / 2.4} color='#D5FF5F' className='self-center absolute' />
+              <Progress.Circle size={150} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={steps / 10000} color='#D5FF5F' className='self-center' />
+              <Progress.Circle size={110} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={caloriesBurnt / 680} color='#D5FF5F' className='self-center absolute' />
+              <Progress.Circle size={70} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={0 / 2.4} color='#D5FF5F' className='self-center absolute' />
             </View>
           </View>
         </View>
