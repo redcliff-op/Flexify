@@ -2,7 +2,7 @@ import { Text, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useAuthStore } from '@/src/stores/authStore';
+import { useStore } from '@/src/store/store';
 
 const index = () => {
 
@@ -10,9 +10,9 @@ const index = () => {
     webClientId: "haha no"
   });
 
-  const signIn = useAuthStore((state)=>state.signIn)
-  const checkIfAlreadySignedIn = useAuthStore((state)=>state.checkIfAlreadySignedIn)
-
+  const signIn = useStore(state=>state.signIn)
+  const checkIfAlreadySignedIn = useStore(state=>state.checkIfAlreadySignedIn)
+  
   useEffect(()=>{
     checkIfAlreadySignedIn()
   },[])

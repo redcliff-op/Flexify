@@ -1,15 +1,16 @@
-import { useAuthStore } from '@/src/stores/authStore'
 import React, { useEffect } from 'react'
 import { Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
 import { router } from 'expo-router';
-import { useWorkoutStore } from '@/src/stores/workoutStore';
+import { useStore } from '@/src/store/store';
 
 const index = () => {
 
-  const userInfo = useAuthStore.getState().userInfo
-  const { steps, caloriesBurnt, startWorkout, stopWorkout } = useWorkoutStore((state) => ({
+  const {userInfo} = useStore((state)=>({
+    userInfo: state.userInfo
+  }))
+  const { steps, caloriesBurnt, startWorkout, stopWorkout } = useStore((state) => ({
     steps: state.steps,
     caloriesBurnt: state.caloriesBurnt,
     startWorkout: state.startWorkout,
@@ -17,7 +18,6 @@ const index = () => {
   }))
 
   useEffect(() => {
-    startWorkout()
     return () => { stopWorkout() }
   }, [])
 

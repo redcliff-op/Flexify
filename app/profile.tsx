@@ -1,51 +1,67 @@
 import { View, Text, Image, Pressable } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useAuthStore } from '@/src/stores/authStore'
 import { router } from 'expo-router'
+import { useStore } from '@/src/store/store'
 
 const profile = () => {
-  const userInfo = useAuthStore((state) => state.userInfo?.user)
-  const signOut = useAuthStore(state => state.signOut);
+  const { userInfo, signOut, userData } = useStore((state) => ({
+    signOut: state.signOut,
+    userInfo: state.userInfo,
+    userData: state.userData
+  }))
   return (
     <View className='flex-1 bg-background justify-between'>
-      <SafeAreaView className=' bg-darkgray px-5 pb-7 rounded-b-[40]'>
-        <View className='flex-row justify-between items-center'>
-          <Pressable
-            className='self-center'
-            onPress={() => { router.dismiss()}}
-          >
+      <View>
+        <SafeAreaView className=' bg-darkgray px-5 pb-7 rounded-b-[40]'>
+          <View className='flex-row justify-between items-center'>
+            <Pressable
+              className='self-center'
+              onPress={() => { router.dismiss() }}
+            >
+              <Image
+                source={require('../assets/icons/leftarrow.png')}
+                tintColor={'white'}
+                className='w-[30] h-[30]'
+              />
+            </Pressable>
+            <Text className='text-white text-base font-bold'>My Profile</Text>
             <Image
               source={require('../assets/icons/leftarrow.png')}
-              tintColor={'white'}
+              tintColor={'#2D2D36'}
               className='w-[30] h-[30]'
             />
-          </Pressable>
-          <Text className='text-white text-base font-bold'>My Profile</Text>
-          <Image
-            source={require('../assets/icons/leftarrow.png')}
-            tintColor={'#2D2D36'}
-            className='w-[30] h-[30]'
-          />
-        </View>
-        <View className='flex-row mt-5'>
-          <Image
-            source={{ uri: userInfo?.photo?.toString() }}
-            className='w-[100] h-[100] rounded-full'
-          />
-          <View className='self-center ml-3'>
-            <Text className='text-white text-xl font-bold'>
-              {userInfo?.name}
-            </Text>
-            <Text className='text-gray-300 text-base'>
-              {userInfo?.email}
-            </Text>
+          </View>
+          <View className='flex-row mt-5'>
+            <Image
+              source={{ uri: userInfo?.user.photo?.toString() }}
+              className='w-[100] h-[100] rounded-full'
+            />
+            <View className='self-center ml-3'>
+              <Text className='text-white text-xl font-bold'>
+                {userInfo?.user.name}
+              </Text>
+              <Text className='text-gray-300 text-base'>
+                {userInfo?.user.email}
+              </Text>
+            </View>
+          </View>
+        </SafeAreaView>
+        <View className='bg-darkgray rounded-t-[40] rounded-b-[40] px-2 py-4 m-2'>
+          <Text className='text-white text-lg ml-3 mb-2'>Personal Details</Text>
+          <View className='py-3 px-5 bg-background rounded-full my-1'>
+            <Text className='text-white text-lg'>Weight</Text>
+            <Text className='text-palelime text-base'>{userData?.weight} KGs</Text>
+          </View>
+          <View className='py-3 px-5 bg-background rounded-full my-1'>
+            <Text className='text-white text-lg'>Height</Text>
+            <Text className='text-palelime text-base'>{userData?.weight} CMs</Text>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
       <Pressable
         className='bg-palelime rounded-3xl p-5 mx-5 mb-5'
-        onPress={()=>{signOut()}}
+        onPress={() => { signOut() }}
       >
         <Text className='text-black text-lg font-bold self-center'>Sign Out</Text>
       </Pressable>
