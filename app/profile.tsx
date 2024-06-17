@@ -47,17 +47,23 @@ const profile = () => {
             </View>
           </View>
         </SafeAreaView>
-        <View className='bg-darkgray rounded-t-[40] rounded-b-[40] px-2 py-4 m-2'>
-          <Text className='text-white text-lg ml-3 mb-2'>Personal Details</Text>
-          <View className='py-3 px-5 bg-background rounded-full my-1'>
-            <Text className='text-white text-lg'>Weight</Text>
-            <Text className='text-palelime text-base'>{userData?.weight} KGs</Text>
+        <Pressable
+          onPress={()=>{
+            router.navigate(`/userdetails`)
+          }}
+        >
+          <View className='bg-darkgray rounded-t-[40] rounded-b-[40] px-2 py-4 m-2'>
+            <Text className='text-white text-lg ml-3 mb-2'>Personal Details</Text>
+            <View className='py-3 px-5 bg-background rounded-full my-1'>
+              <Text className='text-white text-lg'>Weight</Text>
+              <Text className='text-palelime text-base'>{userData?.weight} KGs</Text>
+            </View>
+            <View className='py-3 px-5 bg-background rounded-full my-1'>
+              <Text className='text-white text-lg'>Height</Text>
+              <Text className='text-palelime text-base'>{userData?.weight} CMs</Text>
+            </View>
           </View>
-          <View className='py-3 px-5 bg-background rounded-full my-1'>
-            <Text className='text-white text-lg'>Height</Text>
-            <Text className='text-palelime text-base'>{userData?.weight} CMs</Text>
-          </View>
-        </View>
+        </Pressable>
       </View>
       <Pressable
         className='bg-palelime rounded-3xl p-5 mx-5 mb-5'

@@ -8,7 +8,7 @@ let subscription: Pedometer.Subscription;
 
 type state = {
   userInfo: User | null;
-  userData: UserData | null;
+  userData: UserData;
   steps: number;
   caloriesBurnt: number;
 }
@@ -26,7 +26,7 @@ type State = state & actions;
 
 export const useStore = create<State>((set, get) => ({
   userInfo: null,
-  userData: null,
+  userData: {height:0, weight:0},
   signIn: async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -65,7 +65,7 @@ export const useStore = create<State>((set, get) => ({
   signOut: async () => {
     try {
       await GoogleSignin.signOut();
-      set({ userInfo: null, userData: null });
+      set({ userInfo: null, userData: {weight:0, height:0} });
       router.dismissAll();
     } catch (error) {
       console.log(error);

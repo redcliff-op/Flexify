@@ -5,15 +5,19 @@ import { useStore } from '@/src/store/store'
 
 const userdetails = () => {
 
-  const [weight, setWeight] = useState<string>("")
-  const [height, setHeight] = useState<string>("")
-  const {setUserData} = useStore((state)=>({
-    setUserData: state.setUserData
+  const {setUserData, userData} = useStore((state)=>({
+    setUserData: state.setUserData,
+    userData: state.userData
   }))
+
+  const [weight, setWeight] = useState<string>(userData.weight.toString())
+  const [height, setHeight] = useState<string>(userData.height.toString())
+
   return (
     <SafeAreaView className='flex-1 bg-background p-2 justify-between'>
       <Text className='text-white text-lg text-center font-bold'>Please Enter your Weight and Height</Text>
       <View>
+        <Text className='text-palelime text-lg mx-2'>Weight (Kgs)</Text>
         <View className="bg-darkgray my-1 h-[70] rounded-3xl px-5">
           <TextInput
             value={weight}
@@ -26,6 +30,7 @@ const userdetails = () => {
             keyboardType='numeric'
           />
         </View>
+        <Text className='text-palelime text-lg mx-2'>Weight (cms)</Text>
         <View className="bg-darkgray my-1 h-[70] rounded-3xl px-5">
           <TextInput
             value={height}
