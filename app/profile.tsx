@@ -60,7 +60,7 @@ const profile = () => {
             </View>
             <View className='py-3 px-5 bg-background rounded-full my-1'>
               <Text className='text-white text-lg'>Height</Text>
-              <Text className='text-palelime text-base'>{userData?.weight} CMs</Text>
+              <Text className='text-palelime text-base'>{userData?.height} CMs</Text>
             </View>
           </View>
         </Pressable>
