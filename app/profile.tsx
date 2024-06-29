@@ -52,13 +52,13 @@ const profile = () => {
             router.navigate(`/userdetails`)
           }}
         >
-          <View className='bg-darkgray rounded-t-[40] rounded-b-[40] px-2 py-4 m-2'>
-            <Text className='text-white text-lg ml-3 mb-2'>Personal Details</Text>
-            <View className='py-3 px-5 bg-background rounded-full my-1'>
+          <View className='bg-darkgray rounded-3xl px-2 py-2 m-2'>
+            <Text className='text-white text-lg ml-3 mb-1'>Personal Details</Text>
+            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
               <Text className='text-white text-lg'>Weight</Text>
               <Text className='text-palelime text-base'>{userData?.weight} KGs</Text>
             </View>
-            <View className='py-3 px-5 bg-background rounded-full my-1'>
+            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
               <Text className='text-white text-lg'>Height</Text>
               <Text className='text-palelime text-base'>{userData?.height} CMs</Text>
             </View>
