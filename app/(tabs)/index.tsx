@@ -7,18 +7,18 @@ import { useStore } from '@/src/store/store';
 
 const index = () => {
 
-  const {userInfo} = useStore((state)=>({
+  const { userInfo } = useStore((state) => ({
     userInfo: state.userInfo
   }))
-  const { steps, caloriesBurnt, startWorkout, stopWorkout } = useStore((state) => ({
+  const { steps, caloriesBurnt, stopStepCounter } = useStore((state) => ({
     steps: state.steps,
     caloriesBurnt: state.caloriesBurnt,
-    startWorkout: state.startWorkout,
-    stopWorkout: state.stopWorkout
+    startStepCounter: state.startStepCounter,
+    stopStepCounter: state.stopStepCounter
   }))
 
   useEffect(() => {
-    return () => { stopWorkout() }
+    return () => { stopStepCounter() }
   }, [])
 
   return (
@@ -95,7 +95,13 @@ const index = () => {
           style={{ borderRadius: 40 }}
         >
           <Text className='text-white text-lg px-5'>Workouts</Text>
-          <View className='p-2 mx-2 mt-2 justify-between bg-background rounded-full flex-row'>
+          <Pressable
+            className='p-2 mx-2 mt-2 justify-between bg-background rounded-full flex-row'
+            onPress={() => {
+              useStore.setState({ currentExercise: 'walk' })
+              router.navigate(`/exercise`)
+            }}
+          >
             <View className='flex-row'>
               <View className='rounded-full bg-black self-center p-3'>
                 <Image
@@ -114,8 +120,14 @@ const index = () => {
               className='w-[25] h-[25] self-center'
               tintColor={'white'}
             />
-          </View>
-          <View className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'>
+          </Pressable>
+          <Pressable
+            className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'
+            onPress={() => {
+              useStore.setState({ currentExercise: 'sprint' })
+              router.navigate(`/exercise`)
+            }}  
+          >
             <View className='flex-row'>
               <View className='rounded-full bg-black self-center p-3'>
                 <Image
@@ -134,30 +146,30 @@ const index = () => {
               className='w-[25] h-[25] self-center'
               tintColor={'white'}
             />
-          </View>
-          <View className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'>
-            <View className='flex-row'>
-              <View className='rounded-full bg-black self-center p-3'>
-                <Image
-                  source={require('../../assets/icons/swim.png')}
-                  className='w-[25] h-[25]'
-                  tintColor={'#D5FF5F'}
-                />
-              </View>
-              <View className='px-2'>
-                <Text className='text-gray-300'>Swim</Text>
-                <Text className='text-white text-lg font-bold'>1.21 Km</Text>
-              </View>
+        </Pressable>
+        <View className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'>
+          <View className='flex-row'>
+            <View className='rounded-full bg-black self-center p-3'>
+              <Image
+                source={require('../../assets/icons/swim.png')}
+                className='w-[25] h-[25]'
+                tintColor={'#D5FF5F'}
+              />
             </View>
-            <Image
-              source={require('../../assets/icons/rightarrow.png')}
-              className='w-[25] h-[25] self-center'
-              tintColor={'white'}
-            />
+            <View className='px-2'>
+              <Text className='text-gray-300'>Swim</Text>
+              <Text className='text-white text-lg font-bold'>1.21 Km</Text>
+            </View>
           </View>
+          <Image
+            source={require('../../assets/icons/rightarrow.png')}
+            className='w-[25] h-[25] self-center'
+            tintColor={'white'}
+          />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
+    </SafeAreaView >
   )
 }
 

@@ -10,7 +10,13 @@ type state = {
   userInfo: User | null;
   userData: UserData;
   steps: number;
+  refSteps: number,
   caloriesBurnt: number;
+  refCaloriesBurnt: number,
+  isExercising: boolean,
+  exerciseIntensity: number,
+  currentExercise: string | undefined,
+  exerciseData: exerciseData | null
 }
 
 type actions = {
@@ -18,15 +24,16 @@ type actions = {
   checkIfAlreadySignedIn: () => Promise<void>;
   signOut: () => Promise<void>;
   setUserData: () => Promise<void>;
-  startWorkout: (userData: UserData) => Promise<void>;
-  stopWorkout: () => void;
+  startStepCounter: (userData: UserData) => Promise<void>;
+  stopStepCounter: () => void;
+  startExercise: () => void,
 }
 
 type State = state & actions;
 
 export const useStore = create<State>((set, get) => ({
   userInfo: null,
-  userData: {height:0, weight:0},
+  userData: { height: 0, weight: 0 },
   signIn: async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -40,7 +47,7 @@ export const useStore = create<State>((set, get) => ({
         const data = userSnapshot.data();
         if (data && data.userData) {
           set({ userData: data.userData });
-          get().startWorkout(data.userData)
+          get().startStepCounter(data.userData)
         }
         router.navigate(`/(tabs)`);
       }
@@ -57,7 +64,7 @@ export const useStore = create<State>((set, get) => ({
       const data = userSnapshot.data();
       if (data && data.userData) {
         set({ userData: data.userData });
-        get().startWorkout(data.userData)
+        get().startStepCounter(data.userData)
       }
       router.navigate(`/(tabs)`);
     }
@@ -65,7 +72,7 @@ export const useStore = create<State>((set, get) => ({
   signOut: async () => {
     try {
       await GoogleSignin.signOut();
-      set({ userInfo: null, userData: {weight:0, height:0} });
+      set({ userInfo: null, userData: { weight: 0, height: 0 } });
       router.dismissAll();
     } catch (error) {
       console.log(error);
@@ -77,31 +84,80 @@ export const useStore = create<State>((set, get) => ({
       await userRef.set({
         userData: get().userData,
       });
-      get().startWorkout(get().userData!!)
+      get().startStepCounter(get().userData!!)
       router.navigate(`/(tabs)`);
     } catch (error) {
       console.log(error);
     }
   },
   steps: 0,
+  refSteps: 0,
   caloriesBurnt: 0,
+  refCaloriesBurnt:0,
   subscription: null,
-  startWorkout: async (userData: UserData) => {
-    get().stopWorkout()
+  startStepCounter: async (userData: UserData) => {
+    get().stopStepCounter()
     const isAvailable = await Pedometer.isAvailableAsync();
     if (isAvailable) {
       subscription = Pedometer.watchStepCount((stepCount) => {
         const steps = stepCount.steps;
-        const caloriesBurnt = ((userData.height * 0.415 * steps) / 100000) * (0.57 * userData.weight);
+        const caloriesBurnt = parseFloat((((userData.height * 0.415 * steps) / 100000) * (0.57 * userData.weight)).toPrecision(2))
         set({ steps, caloriesBurnt });
+        if(get().isExercising){
+          const currentExerciseData = get().exerciseData
+          if(currentExerciseData){
+            set({
+              exerciseData: {
+                ...currentExerciseData,
+                steps: steps - get().refSteps,
+                calories: caloriesBurnt - get().refCaloriesBurnt
+              }
+            })
+          }
+        }
       });
     } else {
       console.log('Pedometer not available');
     }
   },
-  stopWorkout: () => {
+  stopStepCounter: () => {
     if (subscription) {
       subscription.remove();
     }
-  }
+  },
+  isExercising: false,
+  exerciseIntensity: 2,
+  startExercise: () => {
+    if (!(get().isExercising)) {
+      const startTime = new Date().getTime()
+      set({
+        exerciseData: {
+          exercise: get().currentExercise,
+          steps: 0,
+          calories: 0,
+          distance: 0,
+          intensity: get().exerciseIntensity,
+          startTime: startTime,
+          endTime: undefined
+        },
+        refSteps: get().steps,
+        refCaloriesBurnt: get().caloriesBurnt
+      })
+    } else {
+      const endTime = new Date().getTime()
+      const currentExerciseData = get().exerciseData
+      if(currentExerciseData){
+        set({
+          exerciseData: {
+            ...currentExerciseData,
+            endTime: endTime
+          }
+        })
+        set({exerciseData: null, refSteps: 0, refCaloriesBurnt: 0})
+      }
+    }
+    set({ isExercising: !(get().isExercising)})
+  },
+  currentExercise: undefined,
+  exerciseData: null
 }));

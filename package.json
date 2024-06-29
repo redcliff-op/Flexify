@@ -44,7 +44,8 @@
     "react-native-svg": "^15.3.0",
     "react-native-svg-transformer": "^1.4.0",
     "react-native-web": "~0.19.10",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "lottie-react-native": "6.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
