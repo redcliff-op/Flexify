@@ -3,12 +3,11 @@ type UserData = {
   height: number,
 }
 
-type exerciseData = {
+type ExerciseData = {
   exercise: string | undefined,
   steps: number | undefined,
   calories: number | undefined,
   distance: number | undefined,
   intensity: number | undefined,
-  startTime: number | undefined,
-  endTime: number | undefined
+  startTime: number | undefined
 }

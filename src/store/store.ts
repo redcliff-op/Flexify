@@ -18,7 +18,8 @@ type state = {
   isExercising: boolean,
   exerciseIntensity: number,
   currentExercise: string | undefined,
-  exerciseData: exerciseData | null
+  exerciseData: ExerciseData | null,
+  exerciseRecord: ExerciseData[]
 }
 
 type actions = {
@@ -30,13 +31,13 @@ type actions = {
   calculateCalories: (steps: number, user: UserData, intensity: number, exercise: string) => number,
   calculateDistance: (steps: number, user: UserData, intensity: number) => number,
   stopStepCounter: () => void;
-  startExercise: () => Promise<void>,
+  startExercise: () => void,
 }
 
 type State = state & actions;
 
 export const useStore = create<State>((set, get) => ({
-  
+
   userInfo: null,
   userData: { height: 0, weight: 0 },
   steps: 0,
@@ -50,6 +51,7 @@ export const useStore = create<State>((set, get) => ({
   exerciseData: null,
   isExercising: false,
   exerciseIntensity: 1,
+  exerciseRecord: [],
 
   signIn: async () => {
     try {
@@ -63,7 +65,7 @@ export const useStore = create<State>((set, get) => ({
       } else {
         const data = userSnapshot.data();
         if (data && data.userData) {
-          set({ userData: data.userData });
+          set({ userData: data.userData, exerciseRecord: data.exerciseRecord });
           get().startStepCounter(data.userData)
         }
         router.navigate(`/(tabs)`);
@@ -80,9 +82,12 @@ export const useStore = create<State>((set, get) => ({
       const userRef = firestore().collection('Users').doc(userInfo.user.email);
       const userSnapshot = await userRef.get();
       const data = userSnapshot.data();
-      if (data && data.userData) {
+      if (data) {
         set({ userData: data.userData });
         get().startStepCounter(data.userData)
+        if (data.exerciseRecord) {
+          set({ exerciseRecord: data.exerciseRecord })
+        }
       }
       router.navigate(`/(tabs)`);
     }
@@ -91,7 +96,7 @@ export const useStore = create<State>((set, get) => ({
   signOut: async () => {
     try {
       await GoogleSignin.signOut();
-      set({ userInfo: null, userData: { weight: 0, height: 0 } });
+      set({ userInfo: null, userData: { weight: 0, height: 0 }, exerciseRecord: [] });
       router.dismissAll();
     } catch (error) {
       console.log(error);
@@ -103,6 +108,7 @@ export const useStore = create<State>((set, get) => ({
       const userRef = firestore().collection('Users').doc(get().userInfo?.user.email);
       await userRef.set({
         userData: get().userData,
+        exerciseRecord: get().exerciseRecord
       });
       get().startStepCounter(get().userData!!)
       router.navigate(`/(tabs)`);
@@ -175,7 +181,7 @@ export const useStore = create<State>((set, get) => ({
     return parseFloat(distanceMeters.toFixed(1));
   },
 
-  startExercise: async () => {
+  startExercise: () => {
     if (!(get().isExercising)) {
       const startTime = new Date().getTime()
       set({
@@ -185,23 +191,16 @@ export const useStore = create<State>((set, get) => ({
           calories: 0,
           distance: 0,
           intensity: get().exerciseIntensity,
-          startTime: startTime,
-          endTime: undefined
+          startTime: startTime
         },
         refSteps: get().steps,
         refCaloriesBurnt: get().caloriesBurnt,
         refDistance: get().distance
       })
     } else {
-      const endTime = new Date().getTime()
       const currentExerciseData = get().exerciseData
       if (currentExerciseData) {
-        set({
-          exerciseData: {
-            ...currentExerciseData,
-            endTime: endTime
-          }
-        })
+        set({ exerciseRecord: [...get().exerciseRecord, currentExerciseData] })
         set({
           exerciseData: null,
           refSteps: 0,
@@ -209,6 +208,10 @@ export const useStore = create<State>((set, get) => ({
           refDistance: 0,
           exerciseIntensity: 1,
           currentExercise: 'walk'
+        })
+        const userRef = firestore().collection('Users').doc(get().userInfo?.user.email);
+        userRef.update({
+          exerciseRecord: get().exerciseRecord
         })
       }
     }
