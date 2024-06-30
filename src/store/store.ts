@@ -101,8 +101,8 @@ export const useStore = create<State>((set, get) => ({
     if (isAvailable) {
       subscription = Pedometer.watchStepCount((stepCount) => {
         const steps = stepCount.steps;
-        const caloriesBurnt = parseFloat((((userData.height * 0.415 * steps) / 100000) * (0.57 * userData.weight)).toPrecision(2))
-        set({ steps, caloriesBurnt });
+        const caloriesBurnt = (((userData.height * 0.415 * steps) / 100000) * (0.57 * userData.weight))
+        set({ steps, caloriesBurnt: parseFloat(caloriesBurnt.toPrecision(2)) });
         if(get().isExercising){
           const currentExerciseData = get().exerciseData
           if(currentExerciseData){
@@ -110,7 +110,7 @@ export const useStore = create<State>((set, get) => ({
               exerciseData: {
                 ...currentExerciseData,
                 steps: steps - get().refSteps,
-                calories: caloriesBurnt - get().refCaloriesBurnt
+                calories: parseFloat((caloriesBurnt - get().refCaloriesBurnt).toPrecision(2))
               }
             })
           }
