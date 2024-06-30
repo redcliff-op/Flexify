@@ -140,9 +140,9 @@ const exercise = () => {
               <View className='flex-row justify-between px-2 mb-2'>
                 <View>
                   <Text className='text-palelime text-base'>Distance</Text>
-                  <Text className='text-white text-lg font-bold'>{exerciseData?.distance} <Text className='text-base font-light text-gray-300'>/ 10000m</Text></Text>
+                  <Text className='text-white text-lg font-bold'>{exerciseData?.distance} <Text className='text-base font-light text-gray-300'>/ 3000m</Text></Text>
                 </View>
-                <Progress.Bar progress={(exerciseData?.distance!!) / 10000} color='#D5FF5F' height={20} borderRadius={20} className='self-center' />
+                <Progress.Bar progress={(exerciseData?.distance!!) / 3000} color='#D5FF5F' height={20} borderRadius={20} className='self-center' />
               </View>
             </View>
             <Pressable

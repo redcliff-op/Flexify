@@ -13,6 +13,8 @@ type state = {
   refSteps: number,
   caloriesBurnt: number;
   refCaloriesBurnt: number,
+  distance: number,
+  refDistance: number,
   isExercising: boolean,
   exerciseIntensity: number,
   currentExercise: string | undefined,
@@ -25,15 +27,30 @@ type actions = {
   signOut: () => Promise<void>;
   setUserData: () => Promise<void>;
   startStepCounter: (userData: UserData) => Promise<void>;
+  calculateCalories: (steps: number, user: UserData, intensity: number, exercise: string) => number,
+  calculateDistance: (steps: number, user: UserData, intensity: number) => number,
   stopStepCounter: () => void;
-  startExercise: () => void,
+  startExercise: () => Promise<void>,
 }
 
 type State = state & actions;
 
 export const useStore = create<State>((set, get) => ({
+  
   userInfo: null,
   userData: { height: 0, weight: 0 },
+  steps: 0,
+  refSteps: 0,
+  caloriesBurnt: 0,
+  refCaloriesBurnt: 0,
+  distance: 0,
+  refDistance: 0,
+  subscription: null,
+  currentExercise: 'walk',
+  exerciseData: null,
+  isExercising: false,
+  exerciseIntensity: 1,
+
   signIn: async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -55,6 +72,7 @@ export const useStore = create<State>((set, get) => ({
       console.log(error);
     }
   },
+
   checkIfAlreadySignedIn: async () => {
     const userInfo = await GoogleSignin.getCurrentUser();
     if (userInfo !== null) {
@@ -69,6 +87,7 @@ export const useStore = create<State>((set, get) => ({
       router.navigate(`/(tabs)`);
     }
   },
+
   signOut: async () => {
     try {
       await GoogleSignin.signOut();
@@ -78,6 +97,7 @@ export const useStore = create<State>((set, get) => ({
       console.log(error);
     }
   },
+
   setUserData: async () => {
     try {
       const userRef = firestore().collection('Users').doc(get().userInfo?.user.email);
@@ -90,27 +110,25 @@ export const useStore = create<State>((set, get) => ({
       console.log(error);
     }
   },
-  steps: 0,
-  refSteps: 0,
-  caloriesBurnt: 0,
-  refCaloriesBurnt:0,
-  subscription: null,
+
   startStepCounter: async (userData: UserData) => {
     get().stopStepCounter()
     const isAvailable = await Pedometer.isAvailableAsync();
     if (isAvailable) {
       subscription = Pedometer.watchStepCount((stepCount) => {
         const steps = stepCount.steps;
-        const caloriesBurnt = (((userData.height * 0.415 * steps) / 100000) * (0.57 * userData.weight))
-        set({ steps, caloriesBurnt: parseFloat(caloriesBurnt.toPrecision(2)) });
-        if(get().isExercising){
+        const caloriesBurnt = get().calculateCalories(steps, userData, get().exerciseIntensity, get().currentExercise!!)
+        const distance = get().calculateDistance(steps, userData, get().exerciseIntensity)
+        set({ steps, caloriesBurnt, distance });
+        if (get().isExercising) {
           const currentExerciseData = get().exerciseData
-          if(currentExerciseData){
+          if (currentExerciseData) {
             set({
               exerciseData: {
                 ...currentExerciseData,
                 steps: steps - get().refSteps,
-                calories: parseFloat((caloriesBurnt - get().refCaloriesBurnt).toPrecision(2))
+                calories: parseFloat((caloriesBurnt - get().refCaloriesBurnt).toFixed(1)),
+                distance: parseFloat((distance - get().refDistance).toFixed(1))
               }
             })
           }
@@ -120,14 +138,44 @@ export const useStore = create<State>((set, get) => ({
       console.log('Pedometer not available');
     }
   },
+
   stopStepCounter: () => {
     if (subscription) {
       subscription.remove();
     }
   },
-  isExercising: false,
-  exerciseIntensity: 2,
-  startExercise: () => {
+
+  calculateCalories: (steps: number, user: UserData, intensity: number, exercise: string): number => {
+    const metValues: { [key: string]: { [key: number]: number } } = {
+      walk: {
+        1: 2.0,
+        2: 3.0,
+        3: 4.0
+      },
+      sprint: {
+        1: 6.5,
+        2: 11.0,
+        3: 14.0
+      }
+    };
+    const met = metValues[exercise][intensity];
+    const caloriesBurnt = (met * user.weight * steps * 0.0005);
+    return parseFloat(caloriesBurnt.toFixed(1));
+  },
+
+  calculateDistance: (steps: number, user: UserData, intensity: number): number => {
+    const strideLengthFactors: { [key: number]: number } = {
+      1: 0.40,
+      2: 0.414,
+      3: 0.45
+    };
+    const strideFactor = strideLengthFactors[intensity];
+    const strideLength = user.height * strideFactor;
+    const distanceMeters = (steps * strideLength) / 100;
+    return parseFloat(distanceMeters.toFixed(1));
+  },
+
+  startExercise: async () => {
     if (!(get().isExercising)) {
       const startTime = new Date().getTime()
       set({
@@ -141,23 +189,29 @@ export const useStore = create<State>((set, get) => ({
           endTime: undefined
         },
         refSteps: get().steps,
-        refCaloriesBurnt: get().caloriesBurnt
+        refCaloriesBurnt: get().caloriesBurnt,
+        refDistance: get().distance
       })
     } else {
       const endTime = new Date().getTime()
       const currentExerciseData = get().exerciseData
-      if(currentExerciseData){
+      if (currentExerciseData) {
         set({
           exerciseData: {
             ...currentExerciseData,
             endTime: endTime
           }
         })
-        set({exerciseData: null, refSteps: 0, refCaloriesBurnt: 0})
+        set({
+          exerciseData: null,
+          refSteps: 0,
+          refCaloriesBurnt: 0,
+          refDistance: 0,
+          exerciseIntensity: 1,
+          currentExercise: 'walk'
+        })
       }
     }
-    set({ isExercising: !(get().isExercising)})
+    set({ isExercising: !(get().isExercising) })
   },
-  currentExercise: undefined,
-  exerciseData: null
 }));

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
 import { router } from 'expo-router';
@@ -10,11 +10,14 @@ const index = () => {
   const { userInfo } = useStore((state) => ({
     userInfo: state.userInfo
   }))
-  const { steps, caloriesBurnt, stopStepCounter } = useStore((state) => ({
+  const { steps, caloriesBurnt, distance, stopStepCounter, isExercising, currentExercise } = useStore((state) => ({
     steps: state.steps,
     caloriesBurnt: state.caloriesBurnt,
+    distance: state.distance,
     startStepCounter: state.startStepCounter,
-    stopStepCounter: state.stopStepCounter
+    stopStepCounter: state.stopStepCounter,
+    isExercising: state.isExercising,
+    currentExercise: state.currentExercise
   }))
 
   useEffect(() => {
@@ -80,13 +83,13 @@ const index = () => {
               <Text className='text-palelime text-lg font-bold'>{steps} <Text className='text-base font-light text-palelime'>/ 10000</Text></Text>
               <Text className=' text-gray-300 mt-2'>Calories</Text>
               <Text className='text-palelime text-lg font-bold'>{caloriesBurnt} <Text className='text-base font-light text-palelime'>/ 680 Cal</Text></Text>
-              <Text className=' text-gray-300 mt-2'>Water</Text>
-              <Text className='text-palelime text-lg font-bold'>1.8 <Text className='text-base font-light text-palelime'>/ 2.4 L</Text></Text>
+              <Text className=' text-gray-300 mt-2'>Distance</Text>
+              <Text className='text-palelime text-lg font-bold'>{distance} <Text className='text-base font-light text-palelime'>/ 3000 m</Text></Text>
             </View>
             <View className='justify-center'>
               <Progress.Circle size={150} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={steps / 10000} color='#D5FF5F' className='self-center' />
               <Progress.Circle size={110} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={caloriesBurnt / 680} color='#D5FF5F' className='self-center absolute' />
-              <Progress.Circle size={70} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={0 / 2.4} color='#D5FF5F' className='self-center absolute' />
+              <Progress.Circle size={70} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={distance / 3000} color='#D5FF5F' className='self-center absolute' />
             </View>
           </View>
         </View>
@@ -98,8 +101,15 @@ const index = () => {
           <Pressable
             className='p-2 mx-2 mt-2 justify-between bg-background rounded-full flex-row'
             onPress={() => {
-              useStore.setState({ currentExercise: 'walk' })
-              router.navigate(`/exercise`)
+              if (isExercising && currentExercise !== 'walk') {
+                Alert.alert(
+                  'Another Workout Session Already Active!',
+                  'Please Stop the Previous Session before starting a new one'
+                )
+              } else {
+                useStore.setState({ currentExercise: 'walk' })
+                router.navigate(`/exercise`)
+              }
             }}
           >
             <View className='flex-row'>
@@ -124,9 +134,16 @@ const index = () => {
           <Pressable
             className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'
             onPress={() => {
-              useStore.setState({ currentExercise: 'sprint' })
-              router.navigate(`/exercise`)
-            }}  
+              if (isExercising && currentExercise !== 'sprint') {
+                Alert.alert(
+                  'Another Workout Session Already Active!',
+                  'Please Stop the Previous Session before starting a new one'
+                )
+              } else {
+                useStore.setState({ currentExercise: 'sprint' })
+                router.navigate(`/exercise`)
+              }
+            }}
           >
             <View className='flex-row'>
               <View className='rounded-full bg-black self-center p-3'>
@@ -146,29 +163,29 @@ const index = () => {
               className='w-[25] h-[25] self-center'
               tintColor={'white'}
             />
-        </Pressable>
-        <View className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'>
-          <View className='flex-row'>
-            <View className='rounded-full bg-black self-center p-3'>
-              <Image
-                source={require('../../assets/icons/swim.png')}
-                className='w-[25] h-[25]'
-                tintColor={'#D5FF5F'}
-              />
+          </Pressable>
+          <View className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'>
+            <View className='flex-row'>
+              <View className='rounded-full bg-black self-center p-3'>
+                <Image
+                  source={require('../../assets/icons/swim.png')}
+                  className='w-[25] h-[25]'
+                  tintColor={'#D5FF5F'}
+                />
+              </View>
+              <View className='px-2'>
+                <Text className='text-gray-300'>Swim</Text>
+                <Text className='text-white text-lg font-bold'>1.21 Km</Text>
+              </View>
             </View>
-            <View className='px-2'>
-              <Text className='text-gray-300'>Swim</Text>
-              <Text className='text-white text-lg font-bold'>1.21 Km</Text>
-            </View>
+            <Image
+              source={require('../../assets/icons/rightarrow.png')}
+              className='w-[25] h-[25] self-center'
+              tintColor={'white'}
+            />
           </View>
-          <Image
-            source={require('../../assets/icons/rightarrow.png')}
-            className='w-[25] h-[25] self-center'
-            tintColor={'white'}
-          />
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
     </SafeAreaView >
   )
 }
