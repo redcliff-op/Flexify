@@ -5,6 +5,7 @@ import { useStore } from '@/src/store/store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUtilStore } from '@/src/store/util';
 import * as Progress from 'react-native-progress';
+import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
 const exercise = () => {
 
@@ -30,7 +31,7 @@ const exercise = () => {
     displayIntensity: state.displayIntensity
   }))
 
-  const animSource = (currentExercise==='walk')?require('../assets/raw/walk.json') : require('../assets/raw/sprint.json') 
+  const animSource = (currentExercise === 'walk') ? require('../assets/raw/walk.json') : require('../assets/raw/sprint.json')
 
   return (
     <SafeAreaView className='flex-1'>
@@ -46,7 +47,7 @@ const exercise = () => {
       />
       <View className='flex-1 bg-background rounded-t-[20] px-2 py-2 justify-between'>
         {!(isExercising) ? (
-          <View>
+          <Animated.View entering={FadeInRight} exiting={FadeOutRight}>
             <Text className='text-white text-xl px-2 my-3'>
               Get ready for a {currentExercise}!
             </Text>
@@ -98,9 +99,9 @@ const exercise = () => {
                 Track the number of steps, calories burnt and distance covered!
               </Text>
             </View>
-          </View>
+          </Animated.View>
         ) : (
-          <View className='px-2 py-3'>
+          <Animated.View entering={FadeInRight} exiting={FadeOutRight} className='px-2 py-3'>
             <View className='bg-darkgray p-2 rounded-3xl justify-center mb-2'>
               <Text className='text-white mb-2 text-lg px-2'>Session Details</Text>
               <ScrollView
@@ -148,12 +149,12 @@ const exercise = () => {
             <Pressable
               className='bg-darkgray rounded-3xl p-5'
               onPress={() => {
-                
+
               }}
             >
               <Text className='text-palelime text-base self-center'>Click here for Tips!</Text>
             </Pressable>
-          </View>
+          </Animated.View>
         )}
         <Pressable
           className='bg-palelime rounded-3xl p-5 mx-5'
