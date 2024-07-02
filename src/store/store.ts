@@ -3,6 +3,7 @@ import { GoogleSignin, User } from "@react-native-google-signin/google-signin";
 import { router } from "expo-router";
 import { Pedometer } from "expo-sensors";
 import firestore from '@react-native-firebase/firestore';
+import { Alert } from "react-native";
 
 let subscription: Pedometer.Subscription;
 
@@ -118,32 +119,48 @@ export const useStore = create<State>((set, get) => ({
   },
 
   startStepCounter: async (userData: UserData) => {
-    get().stopStepCounter()
-    const isAvailable = await Pedometer.isAvailableAsync();
-    if (isAvailable) {
-      subscription = Pedometer.watchStepCount((stepCount) => {
-        const steps = stepCount.steps;
-        const caloriesBurnt = get().calculateCalories(steps, userData, get().exerciseIntensity, get().currentExercise!!)
-        const distance = get().calculateDistance(steps, userData, get().exerciseIntensity)
-        set({ steps, caloriesBurnt, distance });
-        if (get().isExercising) {
-          const currentExerciseData = get().exerciseData
-          if (currentExerciseData) {
-            set({
-              exerciseData: {
-                ...currentExerciseData,
-                steps: steps - get().refSteps,
-                calories: parseFloat((caloriesBurnt - get().refCaloriesBurnt).toFixed(1)),
-                distance: parseFloat((distance - get().refDistance).toFixed(1))
-              }
-            })
-          }
+    try {
+      get().stopStepCounter();  
+      const isAvailable = await Pedometer.isAvailableAsync();
+      if (!isAvailable) {
+        Alert.alert('Pedometer not available', 'Step count will not work because the device lacks necessary sensors');
+        return;
+      }
+      let perms = await Pedometer.getPermissionsAsync();
+      if (!perms.granted) {
+        await Pedometer.requestPermissionsAsync();
+        perms = await Pedometer.getPermissionsAsync();
+        if(!perms.granted){
+          Alert.alert('Permissions Required', 'Please allow access to track workout data from settings.');
         }
-      });
-    } else {
-      console.log('Pedometer not available');
+      }
+      if (perms.granted) {
+        subscription = Pedometer.watchStepCount((stepCount) => {
+          const steps = stepCount.steps;
+          const caloriesBurnt = get().calculateCalories(steps, userData, get().exerciseIntensity, get().currentExercise!!);
+          const distance = get().calculateDistance(steps, userData, get().exerciseIntensity);
+          set({ steps, caloriesBurnt, distance });
+  
+          if (get().isExercising) {
+            const currentExerciseData = get().exerciseData;
+            if (currentExerciseData) {
+              set({
+                exerciseData: {
+                  ...currentExerciseData,
+                  steps: steps - get().refSteps,
+                  calories: parseFloat((caloriesBurnt - get().refCaloriesBurnt).toFixed(1)),
+                  distance: parseFloat((distance - get().refDistance).toFixed(1))
+                }
+              });
+            }
+          }
+        });
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to start step counter. Please try again later.');
     }
   },
+  
 
   stopStepCounter: () => {
     if (subscription) {
