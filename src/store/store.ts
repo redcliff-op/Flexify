@@ -10,12 +10,8 @@ let subscription: Pedometer.Subscription;
 type state = {
   userInfo: User | null;
   userData: UserData;
-  steps: number;
-  refSteps: number,
-  caloriesBurnt: number;
-  refCaloriesBurnt: number,
-  distance: number,
-  refDistance: number,
+  activity: Activity,
+  refActivity: Activity,
   isExercising: boolean,
   exerciseIntensity: number,
   currentExercise: string | undefined,
@@ -41,12 +37,8 @@ export const useStore = create<State>((set, get) => ({
 
   userInfo: null,
   userData: { height: 0, weight: 0 },
-  steps: 0,
-  refSteps: 0,
-  caloriesBurnt: 0,
-  refCaloriesBurnt: 0,
-  distance: 0,
-  refDistance: 0,
+  activity: { steps: 0, caloriesBurnt: 0, distance: 0 },
+  refActivity: { steps: 0, caloriesBurnt: 0, distance: 0 },
   subscription: null,
   currentExercise: 'walk',
   exerciseData: null,
@@ -139,7 +131,7 @@ export const useStore = create<State>((set, get) => ({
           const steps = stepCount.steps;
           const caloriesBurnt = get().calculateCalories(steps, userData, get().exerciseIntensity, get().currentExercise!!);
           const distance = get().calculateDistance(steps, userData, get().exerciseIntensity);
-          set({ steps, caloriesBurnt, distance });
+          set({ activity: { steps, caloriesBurnt, distance } });
   
           if (get().isExercising) {
             const currentExerciseData = get().exerciseData;
@@ -147,9 +139,9 @@ export const useStore = create<State>((set, get) => ({
               set({
                 exerciseData: {
                   ...currentExerciseData,
-                  steps: steps - get().refSteps,
-                  calories: parseFloat((caloriesBurnt - get().refCaloriesBurnt).toFixed(1)),
-                  distance: parseFloat((distance - get().refDistance).toFixed(1))
+                  steps: steps - get().refActivity.steps,
+                  calories: parseFloat((caloriesBurnt - get().refActivity.caloriesBurnt).toFixed(1)),
+                  distance: parseFloat((distance - get().refActivity.distance).toFixed(1))
                 }
               });
             }
@@ -160,7 +152,6 @@ export const useStore = create<State>((set, get) => ({
       Alert.alert('Error', 'Failed to start step counter. Please try again later.');
     }
   },
-  
 
   stopStepCounter: () => {
     if (subscription) {
@@ -210,9 +201,7 @@ export const useStore = create<State>((set, get) => ({
           intensity: get().exerciseIntensity,
           startTime: startTime
         },
-        refSteps: get().steps,
-        refCaloriesBurnt: get().caloriesBurnt,
-        refDistance: get().distance
+        refActivity: { ...get().activity }
       })
     } else {
       const currentExerciseData = get().exerciseData
@@ -220,9 +209,7 @@ export const useStore = create<State>((set, get) => ({
         set({ exerciseRecord: [...get().exerciseRecord, currentExerciseData] })
         set({
           exerciseData: null,
-          refSteps: 0,
-          refCaloriesBurnt: 0,
-          refDistance: 0,
+          refActivity: { steps: 0, caloriesBurnt: 0, distance: 0 },
           exerciseIntensity: 1,
           currentExercise: 'walk'
         })

@@ -7,7 +7,7 @@ import { useStore } from '@/src/store/store';
 const index = () => {
 
   GoogleSignin.configure({
-    webClientId: "haha no"
+    webClientId: "250899975418-upkqdt2v6ort0n5jobp2hulq4g88ap7k.apps.googleusercontent.com"
   });
 
   const signIn = useStore(state=>state.signIn)

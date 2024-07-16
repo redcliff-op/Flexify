@@ -11,3 +11,9 @@ type ExerciseData = {
   intensity: number | undefined,
   startTime: number | undefined
 }
+
+type Activity = {
+  steps: number;
+  caloriesBurnt: number;
+  distance: number;
+}
