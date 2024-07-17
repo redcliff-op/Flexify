@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Alert, AppState, AppStateStatus, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
 import { router } from 'expo-router';
@@ -10,16 +10,31 @@ const index = () => {
   const { userInfo } = useStore((state) => ({
     userInfo: state.userInfo
   }))
-  const { activity, stopStepCounter, isExercising, currentExercise } = useStore((state) => ({
+  const { activity, stopStepCounter, isExercising, currentExercise, updateDailyStats } = useStore((state) => ({
     activity: state.activity,
     startStepCounter: state.startStepCounter,
     stopStepCounter: state.stopStepCounter,
     isExercising: state.isExercising,
-    currentExercise: state.currentExercise
+    currentExercise: state.currentExercise,
+    updateDailyStats: state.updateDailyStats
   }))
 
   useEffect(() => {
-    return () => { stopStepCounter() }
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'background' || nextAppState === 'inactive') {
+        updateDailyStats();
+      }
+    };
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    return () => {
+      subscription.remove();
+    };
+  }, [updateDailyStats]);
+
+  useEffect(() => {
+    return () => {
+      stopStepCounter()
+    }
   }, [])
 
   return (

@@ -16,7 +16,8 @@ type state = {
   exerciseIntensity: number,
   currentExercise: string | undefined,
   exerciseData: ExerciseData | null,
-  exerciseRecord: ExerciseData[]
+  exerciseRecord: ExerciseData[],
+  date: string;
 }
 
 type actions = {
@@ -29,6 +30,7 @@ type actions = {
   calculateDistance: (steps: number, user: UserData, intensity: number) => number,
   stopStepCounter: () => void;
   startExercise: () => void,
+  updateDailyStats: () => Promise<void>
 }
 
 type State = state & actions;
@@ -45,6 +47,7 @@ export const useStore = create<State>((set, get) => ({
   isExercising: false,
   exerciseIntensity: 1,
   exerciseRecord: [],
+  date: new Date().toLocaleDateString(),
 
   signIn: async () => {
     try {
@@ -59,6 +62,11 @@ export const useStore = create<State>((set, get) => ({
         const data = userSnapshot.data();
         if (data && data.userData) {
           set({ userData: data.userData, exerciseRecord: data.exerciseRecord });
+          const activityList: Activity[] = data.activity
+          const todaysActivity = activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
+          if(todaysActivity){
+            set({activity:todaysActivity})
+          }
           get().startStepCounter(data.userData)
         }
         router.navigate(`/(tabs)`);
@@ -77,10 +85,15 @@ export const useStore = create<State>((set, get) => ({
       const data = userSnapshot.data();
       if (data) {
         set({ userData: data.userData });
-        get().startStepCounter(data.userData)
         if (data.exerciseRecord) {
-          set({ exerciseRecord: data.exerciseRecord })
+          set({ exerciseRecord: data.exerciseRecord})
+          const activityList: Activity[] = data.activity
+          const todaysActivity = activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
+          if(todaysActivity){
+            set({activity:todaysActivity})
+          }
         }
+        get().startStepCounter(data.userData)
       }
       router.navigate(`/(tabs)`);
     }
@@ -101,7 +114,8 @@ export const useStore = create<State>((set, get) => ({
       const userRef = firestore().collection('Users').doc(get().userInfo?.user.email);
       await userRef.set({
         userData: get().userData,
-        exerciseRecord: get().exerciseRecord
+        exerciseRecord: get().exerciseRecord,
+        activity: []
       });
       get().startStepCounter(get().userData!!)
       router.navigate(`/(tabs)`);
@@ -127,8 +141,10 @@ export const useStore = create<State>((set, get) => ({
         }
       }
       if (perms.granted) {
+        const currentSteps = get().activity.steps
         subscription = Pedometer.watchStepCount((stepCount) => {
-          const steps = stepCount.steps;
+          const newSteps = stepCount.steps;
+          const steps = currentSteps + newSteps;
           const caloriesBurnt = get().calculateCalories(steps, userData, get().exerciseIntensity, get().currentExercise!!);
           const distance = get().calculateDistance(steps, userData, get().exerciseIntensity);
           set({ activity: { steps, caloriesBurnt, distance } });
@@ -221,4 +237,27 @@ export const useStore = create<State>((set, get) => ({
     }
     set({ isExercising: !(get().isExercising) })
   },
+  updateDailyStats: async() => {
+    try {
+      const userRef = firestore().collection('Users').doc(get().userInfo?.user.email);
+      const userSnapshot = await userRef.get();
+      const data = userSnapshot.data();
+
+      if (data) {
+        const currentDate = get().date;
+        const activity : Activity[] = data.activity
+        const activityIndex = activity.findIndex((a: Activity) => a.date === currentDate);
+        if (activityIndex > -1) {
+          activity[activityIndex] = {...get().activity, date: currentDate};
+        } else {
+          activity.push({ ...get().activity, date: currentDate });
+        }
+        await userRef.update({
+          activity: activity
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }));
