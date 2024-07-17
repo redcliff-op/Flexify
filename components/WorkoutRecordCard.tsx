@@ -88,7 +88,7 @@ const WorkoutRecordCard = ({ exerciseData }: WorkoutRecordCardProps) => {
                 tintColor={'#D5FF5F'}
               />
               <Text className='text-white ml-2 text-base'>
-                {exerciseData.steps}
+                {exerciseData.steps} <Text className='text-gray-300'>steps</Text>
               </Text>
             </View>
             <View className='flex-row mb-1'>
