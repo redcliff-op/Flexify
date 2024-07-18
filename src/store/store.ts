@@ -17,6 +17,7 @@ type state = {
   currentExercise: string | undefined,
   exerciseData: ExerciseData | null,
   exerciseRecord: ExerciseData[],
+  activityList: Activity[]
   date: string;
 }
 
@@ -47,7 +48,8 @@ export const useStore = create<State>((set, get) => ({
   isExercising: false,
   exerciseIntensity: 1,
   exerciseRecord: [],
-  date: new Date().toLocaleDateString(),
+  activityList: [],
+  date: new Date().toISOString().split('T')[0],
 
   signIn: async () => {
     try {
@@ -61,9 +63,8 @@ export const useStore = create<State>((set, get) => ({
       } else {
         const data = userSnapshot.data();
         if (data && data.userData) {
-          set({ userData: data.userData, exerciseRecord: data.exerciseRecord });
-          const activityList: Activity[] = data.activity
-          const todaysActivity = activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
+          set({ userData: data.userData, exerciseRecord: data.exerciseRecord, activityList: data.activityList });
+          const todaysActivity = get().activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
           if(todaysActivity){
             set({activity:todaysActivity})
           }
@@ -86,9 +87,8 @@ export const useStore = create<State>((set, get) => ({
       if (data) {
         set({ userData: data.userData });
         if (data.exerciseRecord) {
-          set({ exerciseRecord: data.exerciseRecord})
-          const activityList: Activity[] = data.activity
-          const todaysActivity = activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
+          set({ exerciseRecord: data.exerciseRecord, activityList: data.activityList})
+          const todaysActivity = get().activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
           if(todaysActivity){
             set({activity:todaysActivity})
           }
@@ -115,7 +115,7 @@ export const useStore = create<State>((set, get) => ({
       await userRef.set({
         userData: get().userData,
         exerciseRecord: get().exerciseRecord,
-        activity: []
+        activityList: []
       });
       get().startStepCounter(get().userData!!)
       router.navigate(`/(tabs)`);
@@ -245,15 +245,14 @@ export const useStore = create<State>((set, get) => ({
 
       if (data) {
         const currentDate = get().date;
-        const activity : Activity[] = data.activity
-        const activityIndex = activity.findIndex((a: Activity) => a.date === currentDate);
+        const activityIndex = get().activityList.findIndex((a: Activity) => a.date === currentDate);
         if (activityIndex > -1) {
-          activity[activityIndex] = {...get().activity, date: currentDate};
+          get().activityList[activityIndex] = {...get().activity, date: currentDate};
         } else {
-          activity.push({ ...get().activity, date: currentDate });
+          get().activityList.push({ ...get().activity, date: currentDate });
         }
         await userRef.update({
-          activity: activity
+          activityList: get().activityList
         });
       }
     } catch (error) {

@@ -1,23 +1,29 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert, AppState, AppStateStatus, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
 import { router } from 'expo-router';
 import { useStore } from '@/src/store/store';
+import Animated, { FadeInLeft, FadeInRight, FadeOutLeft, FadeOutRight, LinearTransition } from 'react-native-reanimated';
+import Collapsible from 'react-native-collapsible';
 
 const index = () => {
 
-  const { userInfo } = useStore((state) => ({
-    userInfo: state.userInfo
-  }))
-  const { activity, stopStepCounter, isExercising, currentExercise, updateDailyStats } = useStore((state) => ({
+  const { activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList } = useStore((state) => ({
     activity: state.activity,
+    userInfo: state.userInfo,
     startStepCounter: state.startStepCounter,
     stopStepCounter: state.stopStepCounter,
     isExercising: state.isExercising,
     currentExercise: state.currentExercise,
-    updateDailyStats: state.updateDailyStats
+    updateDailyStats: state.updateDailyStats,
+    activityList: state.activityList.toReversed()
   }))
+
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+  const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  const monthsOfYear = ['January', 'February', 'March', 'April', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  const [pastActivity, setPastActivity] = useState<Activity>({steps: 0, caloriesBurnt: 0, distance: 0})
 
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -82,29 +88,100 @@ const index = () => {
           <Text className='text-white text-lg'>Steps</Text>
           <View className='flex-row justify-between'>
             <Text className='text-white text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-gray-300'>/ 10000</Text></Text>
-            <Progress.Bar progress={activity.steps / 10000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
+            <Progress.Bar progress={((!isExpanded)?activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
           </View>
         </View>
         <View
           className='bg-darkgray mt-2 p-5'
-          style={{ borderRadius: 40 }}
+          style={{ borderRadius: 40, overflow: 'hidden' }}
         >
-          <Text className='text-white text-lg'>Daily Activity</Text>
-          <View className='flex-row justify-between'>
-            <View>
-              <Text className=' text-gray-300 mt-2'>Steps</Text>
-              <Text className='text-palelime text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-palelime'>/ 10000</Text></Text>
-              <Text className=' text-gray-300 mt-2'>Calories</Text>
-              <Text className='text-palelime text-lg font-bold'>{activity.caloriesBurnt} <Text className='text-base font-light text-palelime'>/ 680 Cal</Text></Text>
-              <Text className=' text-gray-300 mt-2'>Distance</Text>
-              <Text className='text-palelime text-lg font-bold'>{activity.distance} <Text className='text-base font-light text-palelime'>/ 3000 m</Text></Text>
-            </View>
-            <View className='justify-center'>
-              <Progress.Circle size={150} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={activity.steps / 10000} color='#D5FF5F' className='self-center' />
-              <Progress.Circle size={110} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={activity.caloriesBurnt / 680} color='#D5FF5F' className='self-center absolute' />
-              <Progress.Circle size={70} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={activity.distance / 3000} color='#D5FF5F' className='self-center absolute' />
-            </View>
+          <Text className='text-white text-lg'>
+            {isExpanded ? 'All Reports' : 'Daily Report'}
+          </Text>
+          <View className='flex-row' style={{ justifyContent: (!isExpanded) ? 'space-between' : 'center' }}>
+            {!(isExpanded) ? (
+              <Animated.View
+                entering={FadeInLeft}
+                exiting={FadeOutLeft}
+              >
+                <Text className=' text-gray-300 mt-2'>Steps</Text>
+                <Text className='text-palelime text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-palelime'>/ 10000</Text></Text>
+                <Text className=' text-gray-300 mt-2'>Calories</Text>
+                <Text className='text-palelime text-lg font-bold'>{activity.caloriesBurnt} <Text className='text-base font-light text-palelime'>/ 680 Cal</Text></Text>
+                <Text className=' text-gray-300 mt-2'>Distance</Text>
+                <Text className='text-palelime text-lg font-bold'>{activity.distance} <Text className='text-base font-light text-palelime'>/ 3000 m</Text></Text>
+              </Animated.View>
+            ) : null}
+            <Animated.View layout={LinearTransition}>
+              <Pressable
+                onPress={() => {
+                  if (!isExpanded) {
+                    setPastActivity(activity)
+                  }
+                  setIsExpanded(!isExpanded)
+                }}
+                className='justify-center'
+              >
+                <Progress.Circle size={160} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded)?activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' className='self-center' />
+                <Progress.Circle size={120} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded)?activity.caloriesBurnt : pastActivity.caloriesBurnt) / 680} color='#D5FF5F' className='self-center absolute' />
+                <Progress.Circle size={80} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded)?activity.distance : pastActivity.distance) / 3000} color='#D5FF5F' className='self-center absolute' />
+              </Pressable>
+            </Animated.View>
           </View>
+          <Collapsible collapsed={!isExpanded}>
+          <Animated.Text entering={FadeInRight} exiting={FadeOutRight} className='self-center my-3 text-white text-base font-bold'>{monthsOfYear[new Date(pastActivity.date!!).getMonth() - 1]} {new Date(activity.date!!).getFullYear()}</Animated.Text>
+            <Animated.FlatList
+              entering={FadeInLeft}
+              exiting={FadeOutLeft}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={activityList}
+              renderItem={({ item }) =>
+                <Pressable
+                  onPress={() => {
+                    setPastActivity(item)
+                  }}
+                  className='bg-black py-2 px-4 mx-1 rounded-3xl items-center'
+                  style={{ backgroundColor: (pastActivity.date === item.date) ? '#D5FF5F' : 'black' }}
+                >
+                  <Text
+                    className='text-base'
+                    style={{ color: (pastActivity.date === item.date) ? 'black' : 'white' }}
+                  >
+                    {daysOfWeek[new Date(item.date!!).getDay()]}
+                  </Text>
+                  <Text
+                    className='text-base font-bold'
+                    style={{ color: (pastActivity.date === item.date) ? 'black' : 'white' }}
+                  >
+                    {item.date?.slice(-2)}
+                  </Text>
+                </Pressable>
+              }
+            >
+            </Animated.FlatList>
+            <Animated.View
+              entering={FadeInRight}
+              exiting={FadeOutRight}
+              className='flex-row justify-evenly items-center'
+            >
+              <View>
+                <Text className=' text-gray-300 mt-2'>Steps</Text>
+                <Text className='text-palelime text-lg font-bold'>{((!isExpanded)?activity.steps : pastActivity.steps)}</Text>
+                <Text className='text-sm font-light text-palelime'>/ 10000</Text>
+              </View>
+              <View>
+                <Text className=' text-gray-300 mt-2'>Calories</Text>
+                <Text className='text-palelime text-lg font-bold'>{((!isExpanded)?activity.caloriesBurnt : pastActivity.caloriesBurnt)}</Text>
+                <Text className='text-sm font-light text-palelime'>/ 680 Cal</Text>
+              </View>
+              <View>
+                <Text className=' text-gray-300 mt-2'>Distance</Text>
+                <Text className='text-palelime text-lg font-bold'>{((!isExpanded)?activity.distance : pastActivity.distance)}</Text>
+                <Text className='text-sm font-light text-palelime'>/ 3000 m</Text>
+              </View>
+            </Animated.View>
+          </Collapsible>
         </View>
         <View
           className='bg-darkgray mt-2 py-5'
