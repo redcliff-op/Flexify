@@ -6,10 +6,11 @@ import { router } from 'expo-router';
 import { useStore } from '@/src/store/store';
 import Animated, { FadeInLeft, FadeInRight, FadeOutLeft, FadeOutRight, LinearTransition } from 'react-native-reanimated';
 import Collapsible from 'react-native-collapsible';
+import moment from 'moment';
 
 const index = () => {
 
-  const { activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList } = useStore((state) => ({
+  const { activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList, exerciseRecord } = useStore((state) => ({
     activity: state.activity,
     userInfo: state.userInfo,
     startStepCounter: state.startStepCounter,
@@ -17,13 +18,32 @@ const index = () => {
     isExercising: state.isExercising,
     currentExercise: state.currentExercise,
     updateDailyStats: state.updateDailyStats,
-    activityList: state.activityList.toReversed()
+    activityList: state.activityList.toReversed(),
+    exerciseRecord: state.exerciseRecord
   }))
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
   const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   const monthsOfYear = ['January', 'February', 'March', 'April', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-  const [pastActivity, setPastActivity] = useState<Activity>({steps: 0, caloriesBurnt: 0, distance: 0})
+  const [pastActivity, setPastActivity] = useState<Activity>({ steps: 0, caloriesBurnt: 0, distance: 0 })
+  const [totalWalkDistance, setTotalWalkDistance] = useState<number>(0)
+  const [totalSprintDistance, setTotalSprintDistance] = useState<number>(0)
+
+  const setupExerciseStats = async () => {
+    const todaysRecord = exerciseRecord.filter((record: ExerciseData) =>
+      moment(record.startTime).isSame(moment(), 'day'))
+    let wDistance = 0
+    let sDistance = 0
+    for (const record of todaysRecord ) {
+      if (record.exercise === 'walk') {
+        wDistance += record.distance!!
+      } else {
+        sDistance += record.distance!!
+      }
+    }
+    setTotalWalkDistance(parseFloat((wDistance/1000).toFixed(2)))
+    setTotalSprintDistance(parseFloat((sDistance/1000).toFixed(2)))
+  }
 
   useEffect(() => {
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
@@ -42,6 +62,10 @@ const index = () => {
       stopStepCounter()
     }
   }, [])
+
+  useEffect(() => {
+    setupExerciseStats()
+  }, [isExercising])
 
   return (
     <SafeAreaView className='flex-1 bg-background px-2 py-2 align-middle'>
@@ -88,7 +112,7 @@ const index = () => {
           <Text className='text-white text-lg'>Steps</Text>
           <View className='flex-row justify-between'>
             <Text className='text-white text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-gray-300'>/ 10000</Text></Text>
-            <Progress.Bar progress={((!isExpanded)?activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
+            <Progress.Bar progress={((!isExpanded) ? activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
           </View>
         </View>
         <View
@@ -122,14 +146,14 @@ const index = () => {
                 }}
                 className='justify-center'
               >
-                <Progress.Circle size={160} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded)?activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' className='self-center' />
-                <Progress.Circle size={120} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded)?activity.caloriesBurnt : pastActivity.caloriesBurnt) / 680} color='#D5FF5F' className='self-center absolute' />
-                <Progress.Circle size={80} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded)?activity.distance : pastActivity.distance) / 3000} color='#D5FF5F' className='self-center absolute' />
+                <Progress.Circle size={160} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' className='self-center' />
+                <Progress.Circle size={120} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.caloriesBurnt : pastActivity.caloriesBurnt) / 680} color='#D5FF5F' className='self-center absolute' />
+                <Progress.Circle size={80} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.distance : pastActivity.distance) / 3000} color='#D5FF5F' className='self-center absolute' />
               </Pressable>
             </Animated.View>
           </View>
           <Collapsible collapsed={!isExpanded}>
-          <Animated.Text entering={FadeInRight} exiting={FadeOutRight} className='self-center my-3 text-white text-base font-bold'>{monthsOfYear[new Date(pastActivity.date!!).getMonth() - 1]} {new Date(activity.date!!).getFullYear()}</Animated.Text>
+            <Animated.Text entering={FadeInRight} exiting={FadeOutRight} className='self-center my-3 text-white text-base font-bold'>{monthsOfYear[new Date(pastActivity.date!!).getMonth() - 1]} {new Date(activity.date!!).getFullYear()}</Animated.Text>
             <Animated.FlatList
               entering={FadeInLeft}
               exiting={FadeOutLeft}
@@ -167,17 +191,17 @@ const index = () => {
             >
               <View>
                 <Text className=' text-gray-300 mt-2'>Steps</Text>
-                <Text className='text-palelime text-lg font-bold'>{((!isExpanded)?activity.steps : pastActivity.steps)}</Text>
+                <Text className='text-palelime text-lg font-bold'>{((!isExpanded) ? activity.steps : pastActivity.steps)}</Text>
                 <Text className='text-sm font-light text-palelime'>/ 10000</Text>
               </View>
               <View>
                 <Text className=' text-gray-300 mt-2'>Calories</Text>
-                <Text className='text-palelime text-lg font-bold'>{((!isExpanded)?activity.caloriesBurnt : pastActivity.caloriesBurnt)}</Text>
+                <Text className='text-palelime text-lg font-bold'>{((!isExpanded) ? activity.caloriesBurnt : pastActivity.caloriesBurnt)}</Text>
                 <Text className='text-sm font-light text-palelime'>/ 680 Cal</Text>
               </View>
               <View>
                 <Text className=' text-gray-300 mt-2'>Distance</Text>
-                <Text className='text-palelime text-lg font-bold'>{((!isExpanded)?activity.distance : pastActivity.distance)}</Text>
+                <Text className='text-palelime text-lg font-bold'>{((!isExpanded) ? activity.distance : pastActivity.distance)}</Text>
                 <Text className='text-sm font-light text-palelime'>/ 3000 m</Text>
               </View>
             </Animated.View>
@@ -212,7 +236,7 @@ const index = () => {
               </View>
               <View className='px-2'>
                 <Text className='text-gray-300'>Walk</Text>
-                <Text className='text-white text-lg font-bold'>2.44 Km</Text>
+                <Text className='text-white text-lg font-bold'>{totalWalkDistance} Km</Text>
               </View>
             </View>
             <Image
@@ -245,7 +269,7 @@ const index = () => {
               </View>
               <View className='px-2'>
                 <Text className='text-gray-300'>Sprint</Text>
-                <Text className='text-white text-lg font-bold'>3.79 Km</Text>
+                <Text className='text-white text-lg font-bold'>{totalSprintDistance} Km</Text>
               </View>
             </View>
             <Image
