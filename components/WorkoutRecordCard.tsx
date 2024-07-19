@@ -1,7 +1,6 @@
-import { View, Text, Image, Pressable, LayoutChangeEvent } from 'react-native'
+import { View, Text, Image, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import * as Progress from 'react-native-progress';
-import Animated, { FadeIn, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import Collapsible from 'react-native-collapsible';
 
 
