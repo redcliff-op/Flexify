@@ -16,5 +16,5 @@ type Activity = {
   steps: number;
   caloriesBurnt: number;
   distance: number;
-  date?: string = new Date().toLocaleDateString()
+  date?: string = new Date().toISOString().split('T')[0]
 }
