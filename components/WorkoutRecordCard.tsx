@@ -1,7 +1,9 @@
-import { View, Text, Image, Pressable } from 'react-native'
+import { View, Text, Image, Pressable, LayoutChangeEvent } from 'react-native'
 import React, { useState } from 'react'
 import * as Progress from 'react-native-progress';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Collapsible from 'react-native-collapsible';
+
 
 interface WorkoutRecordCardProps {
   exerciseData: ExerciseData
@@ -26,10 +28,8 @@ const WorkoutRecordCard = ({ exerciseData }: WorkoutRecordCardProps) => {
         setExpanded(!expanded)
       }}
     >
-      {!(expanded) ? (
-        <Animated.View
-          className='flex-row'
-        >
+      <View>
+        <Collapsible collapsed={expanded} style={{ flexDirection: 'row' }}>
           <View className='rounded-full bg-black self-center p-3'>
             <Image
               source={imageSource}
@@ -64,11 +64,8 @@ const WorkoutRecordCard = ({ exerciseData }: WorkoutRecordCardProps) => {
               </View>
             </View>
           </View>
-        </Animated.View>
-      ) : (
-        <Animated.View
-          className='flex-row'
-        >
+        </Collapsible>
+        <Collapsible collapsed={!expanded} style={{ flexDirection: 'row' }}>
           <View className='justify-center'>
             <Progress.Circle size={150} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={(exerciseData.steps!!) / 10000} color='#D5FF5F' className='self-center' />
             <Progress.Circle size={110} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={(exerciseData.calories!!) / 680} color='#D5FF5F' className='self-center absolute' />
@@ -122,8 +119,8 @@ const WorkoutRecordCard = ({ exerciseData }: WorkoutRecordCardProps) => {
               </Text>
             </View>
           </View>
-        </Animated.View>
-      )}
+        </Collapsible>
+      </View>
     </Pressable>
   )
 }
