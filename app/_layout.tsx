@@ -15,6 +15,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile" options={{ headerShown:false, animation:'ios'}}/>
         <Stack.Screen name='userdetails' options={{headerShown:false, animation:'ios'}}/>
         <Stack.Screen name='exercise' options={{headerShown:false, animation:'ios'}}/>
+        <Stack.Screen name='statGraphs' options={{headerShown:false, animation:'ios'}}/>
       </Stack>
     </View>
   )
