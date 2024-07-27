@@ -1,5 +1,5 @@
 import { View, Text, Pressable, ScrollView } from 'react-native'
-import React, { useRef } from 'react'
+import React, { memo, useRef } from 'react'
 import LottieView from 'lottie-react-native';
 import { useStore } from '@/src/store/store';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,7 @@ import { useUtilStore } from '@/src/store/util';
 import * as Progress from 'react-native-progress';
 import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
-const exercise = () => {
+const exercise = memo(() => {
 
   const animation = useRef(null);
 
@@ -25,7 +25,7 @@ const exercise = () => {
     exerciseData: state.exerciseData
   }))
 
-  const { displayTime, timeDiff, displayIntensity } = useUtilStore((state) => ({
+  const { timeDiff, displayIntensity } = useUtilStore((state) => ({
     timeDiff: state.timeDiff,
     displayTime: state.displayTime,
     displayIntensity: state.displayIntensity
@@ -167,6 +167,6 @@ const exercise = () => {
       </View>
     </SafeAreaView>
   )
-}
+})
 
 export default exercise
