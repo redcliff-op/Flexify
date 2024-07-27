@@ -22,7 +22,8 @@ const Stats = () => {
 
   return (
     <SafeAreaView className='flex-1 px-2 bg-background'>
-      <Text className='text-white text-lg pl-2 font-bold'>Workout Record!</Text>
+      <Text className='text-white text-xl px-2 font-bold'>Stats!</Text>
+      <Text className='text-gray-300 text-base px-2 '>View your Past Workout History</Text>
       <View className='flex-row mt-2 justify-center'>
         <Pressable
           onPress={() => {

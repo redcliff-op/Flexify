@@ -19,6 +19,8 @@ type state = {
   exerciseRecord: ExerciseData[],
   activityList: Activity[]
   date: string;
+  meals: Meal[],
+  fetchLoading: boolean
 }
 
 type actions = {
@@ -31,7 +33,9 @@ type actions = {
   calculateDistance: (steps: number, user: UserData, intensity: number) => number,
   stopStepCounter: () => void;
   startExercise: () => void,
-  updateDailyStats: () => Promise<void>
+  updateDailyStats: () => Promise<void>,
+  fetchCat: (category: string) => Promise<void>,
+  fetchIngred: (ingred: string) => Promise<void>
 }
 
 type State = state & actions;
@@ -50,6 +54,8 @@ export const useStore = create<State>((set, get) => ({
   exerciseRecord: [],
   activityList: [],
   date: new Date().toISOString().split('T')[0],
+  meals: [],
+  fetchLoading: false,
 
   signIn: async () => {
     try {
@@ -64,9 +70,9 @@ export const useStore = create<State>((set, get) => ({
         const data = userSnapshot.data();
         if (data && data.userData) {
           set({ userData: data.userData, exerciseRecord: data.exerciseRecord, activityList: data.activityList });
-          const todaysActivity = get().activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
-          if(todaysActivity){
-            set({activity:todaysActivity})
+          const todaysActivity = get().activityList.find((p: Activity) => p.date?.toString() === get().date.toString())
+          if (todaysActivity) {
+            set({ activity: todaysActivity })
           }
           get().startStepCounter(data.userData)
         }
@@ -87,10 +93,10 @@ export const useStore = create<State>((set, get) => ({
       if (data) {
         set({ userData: data.userData });
         if (data.exerciseRecord) {
-          set({ exerciseRecord: data.exerciseRecord, activityList: data.activityList})
-          const todaysActivity = get().activityList.find((p:Activity)=>p.date?.toString()===get().date.toString())
-          if(todaysActivity){
-            set({activity:todaysActivity})
+          set({ exerciseRecord: data.exerciseRecord, activityList: data.activityList })
+          const todaysActivity = get().activityList.find((p: Activity) => p.date?.toString() === get().date.toString())
+          if (todaysActivity) {
+            set({ activity: todaysActivity })
           }
         }
         get().startStepCounter(data.userData)
@@ -126,7 +132,7 @@ export const useStore = create<State>((set, get) => ({
 
   startStepCounter: async (userData: UserData) => {
     try {
-      get().stopStepCounter();  
+      get().stopStepCounter();
       const isAvailable = await Pedometer.isAvailableAsync();
       if (!isAvailable) {
         Alert.alert('Pedometer not available', 'Step count will not work because the device lacks necessary sensors');
@@ -136,7 +142,7 @@ export const useStore = create<State>((set, get) => ({
       if (!perms.granted) {
         await Pedometer.requestPermissionsAsync();
         perms = await Pedometer.getPermissionsAsync();
-        if(!perms.granted){
+        if (!perms.granted) {
           Alert.alert('Permissions Required', 'Please allow access to track workout data from settings.');
         }
       }
@@ -148,7 +154,7 @@ export const useStore = create<State>((set, get) => ({
           const caloriesBurnt = get().calculateCalories(steps, userData, get().exerciseIntensity, get().currentExercise!!);
           const distance = get().calculateDistance(steps, userData, get().exerciseIntensity);
           set({ activity: { steps, caloriesBurnt, distance } });
-  
+
           if (get().isExercising) {
             const currentExerciseData = get().exerciseData;
             if (currentExerciseData) {
@@ -237,7 +243,7 @@ export const useStore = create<State>((set, get) => ({
     }
     set({ isExercising: !(get().isExercising) })
   },
-  updateDailyStats: async() => {
+  updateDailyStats: async () => {
     try {
       const userRef = firestore().collection('Users').doc(get().userInfo?.user.email);
       const userSnapshot = await userRef.get();
@@ -247,7 +253,7 @@ export const useStore = create<State>((set, get) => ({
         const currentDate = get().date;
         const activityIndex = get().activityList.findIndex((a: Activity) => a.date === currentDate);
         if (activityIndex > -1) {
-          get().activityList[activityIndex] = {...get().activity, date: currentDate};
+          get().activityList[activityIndex] = { ...get().activity, date: currentDate };
         } else {
           get().activityList.push({ ...get().activity, date: currentDate });
         }
@@ -258,5 +264,26 @@ export const useStore = create<State>((set, get) => ({
     } catch (error) {
       console.log(error);
     }
-  }
+  },
+  fetchCat: async (category: string) => {
+    try {
+      const response = await fetch(`www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
+      const data = await response.json()
+      set({ meals: data.meals })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  fetchIngred: async (ingred: string) => {
+    set({fetchLoading: true})
+    try {
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingred}`)
+      const data = await response.json()
+      console.log(data.meals)
+      set({ meals: data.meals })
+    } catch (error) {
+      console.log(error)
+    }
+    set({fetchLoading: false})
+  },
 }));

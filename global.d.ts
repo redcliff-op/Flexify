@@ -18,3 +18,16 @@ type Activity = {
   distance: number;
   date?: string = new Date().toISOString().split('T')[0]
 }
+
+type MealCategory = {
+  idCategory: string,
+  strCategory: string,
+  strCategoryThumb: string,
+  strCategoryDescription: string
+}
+
+type Meal = {
+  strMeal: string,
+  strMealThumb: string,
+  idMeal: string
+}
