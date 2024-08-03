@@ -4,6 +4,7 @@ type util = {
   displayTime: (mills: number) => string,
   displayIntensity: (intensity: number) => string,
   timeDiff: (currentTime: number, oldTime: number) => string,
+  extractYtID: (url: string) => string;
 }
 
 export const useUtilStore = create<util>((get, set)=>({
@@ -30,5 +31,13 @@ export const useUtilStore = create<util>((get, set)=>({
     } else {
       return Math.round(diff / msPerHour) + 'h ago';
     }
-  }
+  },
+  extractYtID: (url: string) : string => {
+    const paramString = url.split('v=')[1];
+    if (paramString) {
+        const videoId = paramString.split('&')[0];
+        return videoId;
+    }
+    return "";
+  },
 }))

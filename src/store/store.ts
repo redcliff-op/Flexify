@@ -20,7 +20,8 @@ type state = {
   activityList: Activity[]
   date: string;
   meals: Meal[],
-  fetchLoading: boolean
+  mealLoading: boolean,
+  mealData: MealData | null
 }
 
 type actions = {
@@ -35,7 +36,8 @@ type actions = {
   startExercise: () => void,
   updateDailyStats: () => Promise<void>,
   fetchCat: (category: string) => Promise<void>,
-  fetchIngred: (ingred: string) => Promise<void>
+  fetchIngred: (ingred: string) => Promise<void>,
+  fetchMealData: (id: string) => Promise<void>
 }
 
 type State = state & actions;
@@ -55,7 +57,8 @@ export const useStore = create<State>((set, get) => ({
   activityList: [],
   date: new Date().toISOString().split('T')[0],
   meals: [],
-  fetchLoading: false,
+  mealLoading: false,
+  mealData: null,
 
   signIn: async () => {
     try {
@@ -275,15 +278,23 @@ export const useStore = create<State>((set, get) => ({
     }
   },
   fetchIngred: async (ingred: string) => {
-    set({fetchLoading: true})
+    set({ mealLoading: true })
     try {
       const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingred}`)
       const data = await response.json()
-      console.log(data.meals)
       set({ meals: data.meals })
     } catch (error) {
       console.log(error)
     }
-    set({fetchLoading: false})
+    set({ mealLoading: false })
   },
+  fetchMealData: async (id: string) => {
+    try{
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
+      const data = await response.json()
+      set({mealData: data.meals[0]})
+    }catch(error){
+      console.log(error)
+    }
+  }
 }));
