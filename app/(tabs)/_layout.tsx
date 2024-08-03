@@ -45,9 +45,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="four"
+        name="chat"
         options={{
-          title: 'Four',
+          title: 'chat',
           tabBarIcon: ({ color, focused }) => (
             <Image source={require('../../assets/icons/chat.png')} className='w-[30] h-[30]' tintColor={color}/>
           ),

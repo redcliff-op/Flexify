@@ -4,8 +4,10 @@ import { router } from "expo-router";
 import { Pedometer } from "expo-sensors";
 import firestore from '@react-native-firebase/firestore';
 import { Alert } from "react-native";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 let subscription: Pedometer.Subscription;
+const API_KEY = 'haha no'
 
 type state = {
   userInfo: User | null;
@@ -21,7 +23,9 @@ type state = {
   date: string;
   meals: Meal[],
   mealLoading: boolean,
-  mealData: MealData | null
+  mealData: MealData | null,
+  messages: ChatMessage[],
+  geminiLoading: boolean
 }
 
 type actions = {
@@ -37,7 +41,8 @@ type actions = {
   updateDailyStats: () => Promise<void>,
   fetchCat: (category: string) => Promise<void>,
   fetchIngred: (ingred: string) => Promise<void>,
-  fetchMealData: (id: string) => Promise<void>
+  fetchMealData: (id: string) => Promise<void>,
+  getGeminiResponse: (prompt: string) => Promise<void>
 }
 
 type State = state & actions;
@@ -59,6 +64,8 @@ export const useStore = create<State>((set, get) => ({
   meals: [],
   mealLoading: false,
   mealData: null,
+  messages: [],
+  geminiLoading: false,
 
   signIn: async () => {
     try {
@@ -289,12 +296,26 @@ export const useStore = create<State>((set, get) => ({
     set({ mealLoading: false })
   },
   fetchMealData: async (id: string) => {
-    try{
+    try {
       const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`)
       const data = await response.json()
-      set({mealData: data.meals[0]})
-    }catch(error){
+      set({ mealData: data.meals[0] })
+    } catch (error) {
       console.log(error)
     }
+  },
+  getGeminiResponse: async (prompt: string) => {
+    set({ geminiLoading: true })
+    try {
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt)
+      const response = result.response
+      const text = response.text()
+      set({ messages: [...get().messages, { message: text, ai: true, time: new Date().toLocaleTimeString().slice(0, -3) }] })
+    } catch (error) {
+      console.log(error)
+    }
+    set({geminiLoading:false})
   }
 }));

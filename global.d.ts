@@ -85,3 +85,9 @@ type IngredientData = {
   ingredient: string,
   measure: string
 }
+
+type ChatMessage = {
+  message: string,
+  ai?: boolean = false,
+  time: string
+}
