@@ -25,8 +25,9 @@ const chat = memo(() => {
           Welcome to Flexify AI !
         </Text>
         <FlatList
+          showsVerticalScrollIndicator={false}
           inverted
-          className='my-2'
+          className='mb-2'
           data={messages.toReversed()}
           renderItem={({ item }) => (
             <ChatCard chatItem={item}></ChatCard>
