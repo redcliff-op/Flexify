@@ -21,3 +21,5 @@ expo-env.d.ts
 
 google-services.json
 GoogleService-Info.plist
+
+Keys.ts

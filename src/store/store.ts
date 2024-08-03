@@ -5,9 +5,9 @@ import { Pedometer } from "expo-sensors";
 import firestore from '@react-native-firebase/firestore';
 import { Alert } from "react-native";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GEMINI_API_KEY } from "@/Keys";
 
 let subscription: Pedometer.Subscription;
-const API_KEY = 'haha no'
 
 type state = {
   userInfo: User | null;
@@ -307,7 +307,7 @@ export const useStore = create<State>((set, get) => ({
   getGeminiResponse: async (prompt: string) => {
     set({ geminiLoading: true })
     try {
-      const genAI = new GoogleGenerativeAI(API_KEY);
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(prompt)
       const response = result.response

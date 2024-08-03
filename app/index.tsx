@@ -3,11 +3,12 @@ import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useStore } from '@/src/store/store';
+import { webClientId } from '@/Keys';
 
 const index = () => {
 
   GoogleSignin.configure({
-    webClientId: "250899975418-upkqdt2v6ort0n5jobp2hulq4g88ap7k.apps.googleusercontent.com"
+    webClientId: webClientId
   });
 
   const signIn = useStore(state=>state.signIn)
