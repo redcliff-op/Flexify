@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { Pedometer } from "expo-sensors";
 import firestore from '@react-native-firebase/firestore';
 import { Alert } from "react-native";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import { GEMINI_API_KEY } from "@/Keys";
 
 let subscription: Pedometer.Subscription;
@@ -25,7 +25,8 @@ type state = {
   mealLoading: boolean,
   mealData: MealData | null,
   messages: ChatMessage[],
-  geminiLoading: boolean
+  geminiLoading: boolean,
+  contextHistory: Content[]
 }
 
 type actions = {
@@ -42,7 +43,7 @@ type actions = {
   fetchCat: (category: string) => Promise<void>,
   fetchIngred: (ingred: string) => Promise<void>,
   fetchMealData: (id: string) => Promise<void>,
-  getGeminiResponse: (prompt: string) => Promise<void>
+  getGeminiResponse: (prompt: string) => Promise<string>
 }
 
 type State = state & actions;
@@ -66,6 +67,7 @@ export const useStore = create<State>((set, get) => ({
   mealData: null,
   messages: [],
   geminiLoading: false,
+  contextHistory: [],
 
   signIn: async () => {
     try {
@@ -304,18 +306,26 @@ export const useStore = create<State>((set, get) => ({
       console.log(error)
     }
   },
-  getGeminiResponse: async (prompt: string) => {
-    set({ geminiLoading: true })
+  getGeminiResponse: async (prompt: string): Promise<string> => {
+    set({ geminiLoading: true });
     try {
+      const history = get().contextHistory
       const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateContent(prompt)
-      const response = result.response
-      const text = response.text()
-      set({ messages: [...get().messages, { message: text, ai: true, time: new Date().toLocaleTimeString().slice(0, -3) }] })
+      const chat = model.startChat({
+        history: history,
+      })
+      const result = await chat.sendMessage(prompt)
+      const response = result.response;
+      const text = response.text();
+      set({ messages: [...get().messages, { message: text, ai: true, time: new Date().toLocaleTimeString().slice(0, -3) }] });
+      set({contextHistory: history})
+      return text;
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      return '';
+    } finally {
+      set({ geminiLoading: false });
     }
-    set({geminiLoading:false})
   }
 }));
