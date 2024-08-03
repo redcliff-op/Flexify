@@ -2,6 +2,7 @@ import MealCard from '@/components/MealCard'
 import { useStore } from '@/src/store/store'
 import React, { memo, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const meals = memo(() => {
@@ -17,9 +18,9 @@ const meals = memo(() => {
 
   const topNavBarElems: string[] = ["Eggs", "Chicken", "Milk", "Salmon", "Chickpeas", "Mushrooms", "Prawns", "Paneer"]
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchIngred("Eggs")
-  },[])
+  }, [])
 
   return (
     <SafeAreaView className='flex-1 bg-background px-2'>
@@ -49,7 +50,9 @@ const meals = memo(() => {
         </ScrollView>
       </View>
       {!(mealLoading) ? (
-        <FlatList
+        <Animated.FlatList
+          entering={FadeIn}
+          exiting={FadeOut}
           className='mt-2'
           data={meals}
           keyExtractor={(item) => item.idMeal}
@@ -58,14 +61,18 @@ const meals = memo(() => {
           )}
           numColumns={2}
         >
-        </FlatList>
-      ):(
-      <View className='flex-1 items-center justify-center'>
-        <View className='flex-row items-center justify-center'>
-          <Text className='text-lg font-bold mr-3 text-white'> Loading</Text>
-          <ActivityIndicator color={'#D5FF5F'} size={150} className='absolute'></ActivityIndicator>
-        </View >
-      </View >
+        </Animated.FlatList>
+      ) : (
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          className='flex-1 items-center justify-center'
+        >
+          <View className='flex-row items-center justify-center'>
+            <Text className='text-lg font-bold mr-3 text-white'> Loading</Text>
+            <ActivityIndicator color={'#D5FF5F'} size={150} className='absolute'></ActivityIndicator>
+          </View >
+        </Animated.View >
       )}
     </SafeAreaView >
   )
