@@ -1,8 +1,10 @@
 import { useStore } from '@/src/store/store'
 import { useUtilStore } from '@/src/store/util'
+import { router } from 'expo-router'
 import React, { memo, useEffect, useState } from 'react'
 import { Text, Image, ScrollView, View, Pressable } from 'react-native'
 import Collapsible from 'react-native-collapsible'
+import Markdown from 'react-native-markdown-display'
 import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated'
 import YoutubePlayer from "react-native-youtube-iframe"
 
@@ -10,9 +12,14 @@ const mealData = memo(() => {
 
   const [ingredExpanded, setIngredExpanded] = useState<boolean>(false);
   const [instrucExpanded, setInstrucExpanded] = useState<boolean>(true);
+  const [geminiExpanded, setGeminiExpanded] = useState<boolean>(false)
+  const [geminiResponse, setGeminiResponse] = useState<string>("")
+  const [responseFetched, setResponseFetched] = useState<boolean>(false)
 
-  const { mealData } = useStore((state) => ({
-    mealData: state.mealData as MealData
+  const { mealData, getGeminiResponse, geminiLoading } = useStore((state) => ({
+    mealData: state.mealData,
+    getGeminiResponse: state.getGeminiResponse,
+    geminiLoading: state.geminiLoading
   }));
 
   const { extractYtID } = useUtilStore((state) => ({
@@ -30,6 +37,13 @@ const mealData = memo(() => {
     }
     return tempIngredients;
   })() : [];
+
+  const loadGeminiResponse = async () => {
+    const request = "Please give the nutritional values even if its not accurate in a table form for the meal " + mealData?.strMeal + " with ingredients " + JSON.stringify(ingredients);
+    const response = await getGeminiResponse(request)
+    setGeminiResponse(response)
+    console.log(request)
+  }
 
   useEffect(() => {
     return () => {
@@ -66,6 +80,59 @@ const mealData = memo(() => {
                 </View>
               </View>
             </View>
+            <Pressable
+              onPress={() => {
+                setGeminiExpanded(!geminiExpanded)
+                if (!responseFetched) {
+                  loadGeminiResponse()
+                  setResponseFetched(true)
+                }
+              }}
+              className='p-4 mb-2 flex-row justify-between items-center bg-darkgray rounded-2xl'
+            >
+              <Text className='text-palelime font-semibold text-lg'>
+                Nutritional Value
+              </Text>
+              <Image
+                style={{ transform: [{ rotate: (ingredExpanded) ? '90deg' : '0deg' }] }}
+                source={require('../assets/images/gemini.png')}
+                className='w-[20] h-[20]'
+                tintColor={'#D5FF5F'}
+              />
+            </Pressable>
+            <Collapsible collapsed={!geminiExpanded}>
+              {geminiLoading ? (
+                <View className='w-max rounded-2xl mb-2 p-10 bg-darkgray'>
+                  <Text className='text-white font-bold'>Loading...</Text>
+                </View>
+              ) : (
+                <View className='w-max px-3 rounded-2xl mb-2 py-2 bg-darkgray'>
+                  <Markdown
+                    style={{
+                      body: {
+                        color: 'white',
+                        fontSize: 17,
+                      },
+                    }}
+                  >
+                    {geminiResponse}
+                  </Markdown>
+                  <Pressable
+                    onPress={() => {
+                      router.navigate(`/(tabs)/chat`)
+                    }}
+                    className='mb-2 flex-row items-center justify-between px-3 py-2 bg-palelime rounded-full'
+                  >
+                    <Text className='text-black font-bold text-base'>Continue In chat</Text>
+                    <Image
+                      className='w-[20] h-[20]'
+                      tintColor={'black'}
+                      source={require('../assets/icons/rightarrow.png')}
+                    />
+                  </Pressable>
+                </View>
+              )}
+            </Collapsible>
             <Pressable
               onPress={() => {
                 setIngredExpanded(!ingredExpanded)
@@ -132,7 +199,7 @@ const mealData = memo(() => {
             />
           </ScrollView>
         </Animated.View >
-      </View>
+      </View >
     ) : (
       <Animated.View
         entering={FadeIn}
