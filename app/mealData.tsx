@@ -48,7 +48,7 @@ const mealData = memo(() => {
         <Animated.View
           entering={FadeInDown}
           className='-mt-10 rounded-t-3xl flex-1 bg-background pt-4 px-4'>
-          <ScrollView >
+          <ScrollView showsVerticalScrollIndicator={false} >
             <Text className=' mb-2 px-2 text-2xl font-semibold text-white'>
               {mealData?.strMeal}
             </Text>
