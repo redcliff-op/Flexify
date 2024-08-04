@@ -1,13 +1,20 @@
-import { View, Text, Pressable, ScrollView } from 'react-native'
-import React, { memo, useRef } from 'react'
+import { View, Text, Pressable, ScrollView, Image } from 'react-native'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import LottieView from 'lottie-react-native';
 import { useStore } from '@/src/store/store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUtilStore } from '@/src/store/util';
 import * as Progress from 'react-native-progress';
-import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInRight, FadeOut, FadeOutRight } from 'react-native-reanimated';
+import Collapsible from 'react-native-collapsible';
+import Markdown from 'react-native-markdown-display';
+import { router } from 'expo-router';
 
 const exercise = memo(() => {
+
+  const [geminiExpanded, setGeminiExpanded] = useState<boolean>(false)
+  const [geminiResponse, setGeminiResponse] = useState<string>("")
+  const [responseFetched, setResponseFetched] = useState<boolean>(false)
 
   const animation = useRef(null);
 
@@ -17,12 +24,16 @@ const exercise = memo(() => {
     startExercise,
     currentExercise,
     exerciseData,
+    getGeminiResponse,
+    geminiLoading
   } = useStore((state) => ({
     exerciseIntensity: state.exerciseIntensity,
     isExercising: state.isExercising,
     startExercise: state.startExercise,
     currentExercise: state.currentExercise,
-    exerciseData: state.exerciseData
+    exerciseData: state.exerciseData,
+    getGeminiResponse: state.getGeminiResponse,
+    geminiLoading: state.geminiLoading
   }))
 
   const { timeDiff, displayIntensity } = useUtilStore((state) => ({
@@ -31,7 +42,17 @@ const exercise = memo(() => {
     displayIntensity: state.displayIntensity
   }))
 
+  const loadGeminiResponse = async () => {
+    const request = `I am going for a ${currentExercise} with intensity ${exerciseIntensity} on a scale of 1-3, 3 being high intensity and 1 being low, make me prepared and tell me anything that you feel might be helpful`;
+    const response = await getGeminiResponse(request)
+    setGeminiResponse(response)
+  }
+
   const animSource = (currentExercise === 'walk') ? require('../assets/raw/walk.json') : require('../assets/raw/sprint.json')
+
+  useEffect(()=>{
+    setResponseFetched(false)
+  },[exerciseIntensity, currentExercise])
 
   return (
     <SafeAreaView className='flex-1'>
@@ -47,7 +68,7 @@ const exercise = memo(() => {
       />
       <View className='flex-1 bg-background rounded-t-[20] px-2 py-2 justify-between'>
         {!(isExercising) ? (
-          <Animated.View entering={FadeInRight} exiting={FadeOutRight}>
+          <Animated.ScrollView entering={FadeInRight} exiting={FadeOutRight}>
             <Text className='text-white text-xl px-2 my-3'>
               Get ready for a {currentExercise}!
             </Text>
@@ -89,17 +110,90 @@ const exercise = memo(() => {
                 >Fast</Text>
               </Pressable>
             </View>
+            <Pressable
+              onPress={() => {
+                setGeminiExpanded(!geminiExpanded)
+                if (!responseFetched && !geminiExpanded) {
+                  loadGeminiResponse()
+                  setResponseFetched(true)
+                }
+              }}
+              className='p-5 mt-3 bg-darkgray rounded-3xl  mx-1'
+            >
+              <View className='flex-row justify-between'>
+                <Text className='text-white text-base'>
+                  Prepare yourself with FlexifyAI
+                </Text>
+                <LottieView
+                  autoPlay
+                  ref={animation}
+                  speed={0.5}
+                  style={{
+                    width: 25,
+                    height: 25,
+                  }}
+                  source={require('../assets/raw/gemini.json')}
+                />
+              </View>
+              <Collapsible collapsed={!geminiExpanded}>
+                <Animated.View
+                  className='bg-darkgray rounded-3xl  mx-1 '
+                  entering={FadeIn}
+                  exiting={FadeOut}
+                >
+                  {geminiLoading ? (
+                    <View className='w-max items-center justify-center rounded-2xl mb-2 p-10 bg-darkgray'>
+                      <LottieView
+                        autoPlay
+                        ref={animation}
+                        style={{
+                          width: 200,
+                          height: 200,
+                        }}
+                        source={require('../assets/raw/ailoading.json')}
+                      />
+                    </View>
+                  ) : (
+                    <View className='w-max rounded-2xl mb-2 bg-darkgray'>
+                      <Markdown
+                        style={{
+                          body: {
+                            color: 'white',
+                            fontSize: 17,
+                          },
+                        }}
+                      >
+                        {geminiResponse}
+                      </Markdown>
+                      <Pressable
+                        onPress={() => {
+                          router.navigate(`/(tabs)/chat`)
+                        }}
+                        className='flex-row items-center justify-between px-3 py-2 bg-palelime rounded-full'
+                      >
+                        <Text className='text-black font-bold text-base'>Continue In chat</Text>
+                        <Image
+                          className='w-[20] h-[20]'
+                          tintColor={'black'}
+                          source={require('../assets/icons/rightarrow.png')}
+                        />
+                      </Pressable>
+                    </View>
+                  )}
+                </Animated.View>
+              </Collapsible>
+            </Pressable>
             <View className='p-5 bg-darkgray rounded-3xl my-3 mx-1'>
               <Text className='text-white text-base'>
-                Walking offers numerous benefits, including improved cardiovascular health, increased energy levels, and enhanced mood. It's a simple, low-impact exercise that can help maintain a healthy weight and reduce the risk of chronic diseases. Regular walking also promotes better sleep and strengthens muscles and bones!
+                Offers numerous benefits, including improved cardiovascular health, increased energy levels, and enhanced mood. It's a simple exercise that can help maintain a healthy weight and reduce the risk of chronic diseases.
               </Text>
             </View>
-            <View className='p-5 bg-darkgray rounded-3xl  mx-1'>
+            <View className='p-5 bg-darkgray rounded-3xl mb-3 mx-1'>
               <Text className='text-white text-base'>
                 Track the number of steps, calories burnt and distance covered!
               </Text>
             </View>
-          </Animated.View>
+          </Animated.ScrollView>
         ) : (
           <Animated.View entering={FadeInRight} exiting={FadeOutRight} className='px-2 py-3'>
             <View className='bg-darkgray p-2 rounded-3xl justify-center mb-2'>
@@ -146,18 +240,13 @@ const exercise = memo(() => {
                 <Progress.Bar progress={(exerciseData?.distance!!) / 3000} color='#D5FF5F' height={20} borderRadius={20} className='self-center' />
               </View>
             </View>
-            <Pressable
-              className='bg-darkgray rounded-3xl p-5'
-              onPress={() => {
-
-              }}
-            >
-              <Text className='text-palelime text-base self-center'>Click here for Tips!</Text>
-            </Pressable>
+            <View className='bg-darkgray rounded-3xl p-5'>
+              <Text className='text-palelime text-base self-center'>Keep Going!</Text>
+            </View>
           </Animated.View>
         )}
         <Pressable
-          className='bg-palelime rounded-3xl p-5 mx-5'
+          className='bg-palelime rounded-3xl p-5 mx-5 mt-2'
           onPress={() => {
             startExercise()
           }}
