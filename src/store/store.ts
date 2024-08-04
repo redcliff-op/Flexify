@@ -43,7 +43,8 @@ type actions = {
   fetchCat: (category: string) => Promise<void>,
   fetchIngred: (ingred: string) => Promise<void>,
   fetchMealData: (id: string) => Promise<void>,
-  getGeminiResponse: (prompt: string) => Promise<string>
+  getGeminiResponse: (prompt: string) => Promise<string>,
+  feedInitialGeminiData: (activityList: Activity[]) => Promise<void>
 }
 
 type State = state & actions;
@@ -86,6 +87,7 @@ export const useStore = create<State>((set, get) => ({
           if (todaysActivity) {
             set({ activity: todaysActivity })
           }
+          get().feedInitialGeminiData(data.activityList)
           get().startStepCounter(data.userData)
         }
         router.navigate(`/(tabs)`);
@@ -111,6 +113,7 @@ export const useStore = create<State>((set, get) => ({
             set({ activity: todaysActivity })
           }
         }
+        get().feedInitialGeminiData(data.activityList)
         get().startStepCounter(data.userData)
       }
       router.navigate(`/(tabs)`);
@@ -327,5 +330,19 @@ export const useStore = create<State>((set, get) => ({
     } finally {
       set({ geminiLoading: false });
     }
-  }
+  },
+  feedInitialGeminiData: async(activityList: Activity[]) => {
+    try {
+      const history = get().contextHistory
+      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const chat = model.startChat({
+        history: history,
+      })
+      await chat.sendMessage(`This is my all time workout statistics based off of which I can ask questions so remember it. ${JSON.stringify(activityList)}`)
+      set({contextHistory: history})
+    } catch (error) {
+      console.log(error);
+    }
+  },
 }));

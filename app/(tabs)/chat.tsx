@@ -4,13 +4,16 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import ChatCard from '@/components/ChatCard';
 import { useStore } from '@/src/store/store';
 import LottieView from 'lottie-react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import ChatQuickAccessCard from '@/components/ChatQuickAccessCard';
 
 const chat = memo(() => {
 
-  const { messages, getGeminiResponse, geminiLoading } = useStore((state) => ({
+  const { userInfo, messages, getGeminiResponse, geminiLoading } = useStore((state) => ({
     messages: state.messages,
     getGeminiResponse: state.getGeminiResponse,
-    geminiLoading: state.geminiLoading
+    geminiLoading: state.geminiLoading,
+    userInfo: state.userInfo
   }))
 
   const [text, setText] = useState<string>("")
@@ -21,18 +24,40 @@ const chat = memo(() => {
     <SafeAreaView className=' justify-between flex-1 px-4 bg-background'>
       <View className='flex-initial mb-2 '>
         <Text className='mb-2 text-white text-xl font-bold'>
-          Welcome to Flexify AI !
+          Flexify AI !
         </Text>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          inverted
-          className='mb-2'
-          data={messages.toReversed()}
-          renderItem={({ item }) => (
-            <ChatCard chatItem={item}></ChatCard>
-          )}
-        />
+        {(messages?.length !== 0) ? (
+          <Animated.FlatList
+            entering={FadeIn}
+            exiting={FadeOut}
+            showsVerticalScrollIndicator={false}
+            inverted
+            className='mb-2'
+            data={messages.toReversed()}
+            renderItem={({ item }) => (
+              <ChatCard chatItem={item}></ChatCard>
+            )}
+          />
+        ) : null}
       </View>
+      {(messages?.length === 0 && !geminiLoading) ? (
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          className='flex-1 justify-center'
+        >
+          <Text className='px-2 text-palelime text-4xl font-extralight text-bold'>Hello {userInfo?.user.givenName}!</Text>
+          <Text className='px-2 text-white text-lg'>Need Help or Motivation? Ask me about exercise routines, meal plans, or any fitness questions! </Text>
+          <View className='flex-row'>
+            <ChatQuickAccessCard heading={'Workout Plan'} desc={'Get a 7 day Workout Plan!'} index={0}/>
+            <ChatQuickAccessCard heading={'Diet Plan'} desc={`Get a full day Diet Plan based on today's progress!`} index={1}/>
+          </View>
+          <View className='flex-row'>
+            <ChatQuickAccessCard heading={'Progress Review'} desc={'Check and Review your last 10 days of Progress!'} index={2}/>
+            <ChatQuickAccessCard heading={'Exercise Tips'} desc={`Get tips on how to perform exercises correctly!`} index={3}/>
+          </View>
+        </Animated.View>
+      ) : null}
       <View className=' mb-2 flex-row items-center justify-between'>
         <View className=' mr-2 py-2.5 flex-auto border-palelime border-2 rounded-full'>
           <TextInput
