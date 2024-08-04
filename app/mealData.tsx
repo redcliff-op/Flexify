@@ -1,7 +1,8 @@
 import { useStore } from '@/src/store/store'
 import { useUtilStore } from '@/src/store/util'
 import { router } from 'expo-router'
-import React, { memo, useEffect, useState } from 'react'
+import LottieView from 'lottie-react-native'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import { Text, Image, ScrollView, View, Pressable } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import Markdown from 'react-native-markdown-display'
@@ -42,7 +43,6 @@ const mealData = memo(() => {
     const request = "Please give the nutritional values even if its not accurate in a table form for the meal " + mealData?.strMeal + " with ingredients " + JSON.stringify(ingredients);
     const response = await getGeminiResponse(request)
     setGeminiResponse(response)
-    console.log(request)
   }
 
   useEffect(() => {
@@ -50,6 +50,8 @@ const mealData = memo(() => {
       useStore.setState({ mealData: null })
     }
   }, [])
+
+  const animation = useRef(null);
 
   return (
     mealData ? (
@@ -93,17 +95,29 @@ const mealData = memo(() => {
               <Text className='text-palelime font-semibold text-lg'>
                 Nutritional Value
               </Text>
-              <Image
-                style={{ transform: [{ rotate: (ingredExpanded) ? '90deg' : '0deg' }] }}
-                source={require('../assets/images/gemini.png')}
-                className='w-[20] h-[20]'
-                tintColor={'#D5FF5F'}
+              <LottieView
+                autoPlay
+                ref={animation}
+                speed={0.2}
+                style={{
+                  width: 22,
+                  height: 22,
+                }}
+                source={require('../assets/raw/gemini.json')}
               />
             </Pressable>
             <Collapsible collapsed={!geminiExpanded}>
               {geminiLoading ? (
-                <View className='w-max rounded-2xl mb-2 p-10 bg-darkgray'>
-                  <Text className='text-white font-bold'>Loading...</Text>
+                <View className='w-max items-center justify-center rounded-2xl mb-2 p-10 bg-darkgray'>
+                  <LottieView
+                    autoPlay
+                    ref={animation}
+                    style={{
+                      width: 200,
+                      height: 200,
+                    }}
+                    source={require('../assets/raw/ailoading.json')}
+                  />
                 </View>
               ) : (
                 <View className='w-max px-3 rounded-2xl mb-2 py-2 bg-darkgray'>

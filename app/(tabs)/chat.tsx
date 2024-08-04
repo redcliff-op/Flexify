@@ -1,8 +1,9 @@
 import { View, Text, FlatList, TextInput, Pressable, Image, ActivityIndicator } from 'react-native'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ChatCard from '@/components/ChatCard';
 import { useStore } from '@/src/store/store';
+import LottieView from 'lottie-react-native';
 
 const chat = memo(() => {
 
@@ -14,9 +15,7 @@ const chat = memo(() => {
 
   const [text, setText] = useState<string>("")
 
-  useEffect(() => {
-
-  }, [])
+  const animation = useRef(null)
 
   return (
     <SafeAreaView className=' justify-between flex-1 px-4 bg-background'>
@@ -61,7 +60,15 @@ const chat = memo(() => {
               />
             </View>
           ) : (
-            <ActivityIndicator color={'#D5FF5F'} size={50}></ActivityIndicator>
+            <LottieView
+              autoPlay
+              ref={animation}
+              style={{
+                width: 50,
+                height: 50,
+              }}
+              source={require('../../assets/raw/ailoading.json')}
+            />
           )}
         </Pressable>
       </View>

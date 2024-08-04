@@ -1,7 +1,7 @@
 import MealCard from '@/components/MealCard'
 import { useStore } from '@/src/store/store'
 import React, { memo, useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -55,7 +55,7 @@ const meals = memo(() => {
           exiting={FadeOut}
           className='mt-2'
           data={meals}
-          keyExtractor={(item) => item.idMeal}
+          keyExtractor={(item) => item.strMealThumb}
           renderItem={({ item }) => (
             <MealCard meal={item} />
           )}
