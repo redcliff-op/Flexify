@@ -87,7 +87,7 @@ export const useStore = create<State>((set, get) => ({
           if (todaysActivity) {
             set({ activity: todaysActivity })
           }
-          get().feedInitialGeminiData(data.activityList)
+          //get().feedInitialGeminiData(data.activityList)
           get().startStepCounter(data.userData)
         }
         router.navigate(`/(tabs)`);
@@ -113,7 +113,7 @@ export const useStore = create<State>((set, get) => ({
             set({ activity: todaysActivity })
           }
         }
-        get().feedInitialGeminiData(data.activityList)
+        //get().feedInitialGeminiData(data.activityList)
         get().startStepCounter(data.userData)
       }
       router.navigate(`/(tabs)`);

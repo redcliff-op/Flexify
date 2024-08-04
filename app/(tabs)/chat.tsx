@@ -49,13 +49,30 @@ const chat = memo(() => {
           <Text className='px-2 text-palelime text-4xl font-extralight text-bold'>Hello {userInfo?.user.givenName}!</Text>
           <Text className='px-2 text-white text-lg'>Need Help or Motivation? Ask me about exercise routines, meal plans, or any fitness questions! </Text>
           <View className='flex-row'>
-            <ChatQuickAccessCard heading={'Workout Plan'} desc={'Get a 7 day Workout Plan!'} index={0}/>
-            <ChatQuickAccessCard heading={'Diet Plan'} desc={`Get a full day Diet Plan based on today's progress!`} index={1}/>
+            <ChatQuickAccessCard heading={'Workout Plan'} desc={'Get a 7 day Workout Plan!'} index={0} />
+            <ChatQuickAccessCard heading={'Diet Plan'} desc={`Get a full day Diet Plan based on today's progress!`} index={1} />
           </View>
           <View className='flex-row'>
-            <ChatQuickAccessCard heading={'Progress Review'} desc={'Check and Review your last 10 days of Progress!'} index={2}/>
-            <ChatQuickAccessCard heading={'Exercise Tips'} desc={`Get tips on how to perform exercises correctly!`} index={3}/>
+            <ChatQuickAccessCard heading={'Progress Review'} desc={'Check and Review your last 10 days of Progress!'} index={2} />
+            <ChatQuickAccessCard heading={'Exercise Tips'} desc={`Get tips on how to perform exercises correctly!`} index={3} />
           </View>
+        </Animated.View>
+      ) : null}
+      {(messages?.length === 0 && geminiLoading) ? (
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          className='flex-1 justify-center items-center'
+        >
+          <LottieView
+            autoPlay
+            ref={animation}
+            style={{
+              width: 200,
+              height: 200,
+            }}
+            source={require('../../assets/raw/ailoading.json')}
+          />
         </Animated.View>
       ) : null}
       <View className=' mb-2 flex-row items-center justify-between'>

@@ -1,17 +1,22 @@
 import MealCard from '@/components/MealCard'
 import { useStore } from '@/src/store/store'
-import React, { memo, useEffect, useState } from 'react'
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
+import { router } from 'expo-router'
+import LottieView from 'lottie-react-native'
+import React, { memo, useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const meals = memo(() => {
 
-  const { meals, fetchIngred, mealLoading } = useStore((state) => ({
+  const { meals, fetchIngred, mealLoading, getGeminiResponse, activity, messages } = useStore((state) => ({
     meals: state.meals,
     fetchCat: state.fetchCat,
     fetchIngred: state.fetchIngred,
-    mealLoading: state.mealLoading
+    mealLoading: state.mealLoading,
+    getGeminiResponse: state.getGeminiResponse,
+    activity: state.activity,
+    messages: state.messages
   }))
 
   const [mode, setMode] = useState<string>("Eggs")
@@ -21,6 +26,8 @@ const meals = memo(() => {
   useEffect(() => {
     fetchIngred("Eggs")
   }, [])
+
+  const animation = useRef(null)
 
   return (
     <SafeAreaView className='flex-1 bg-background px-2'>
@@ -74,6 +81,25 @@ const meals = memo(() => {
           </View >
         </Animated.View >
       )}
+      <TouchableOpacity
+        className="absolute bottom-4 right-4 p-4 bg-black w-15 h-15 rounded-full items-center justify-center"
+        onPress={() => {
+          router.navigate(`/(tabs)/chat`)
+          getGeminiResponse(`Kindly Help me decide what I should eat, just recommend few please, my today's workout stats are ${JSON.stringify(activity)}`)
+          useStore.setState({ messages: [...messages, { message: "Help me choose what I should eat after today's workout", ai: false, time: new Date().toLocaleTimeString().slice(0, -3) }] })
+        }}
+      >
+        <LottieView
+          autoPlay
+          ref={animation}
+          speed={0.2}
+          style={{
+            width: 30,
+            height: 30,
+          }}
+          source={require('../../assets/raw/gemini.json')}
+        />
+      </TouchableOpacity>
     </SafeAreaView >
   )
 })
