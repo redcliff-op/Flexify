@@ -48,7 +48,7 @@ const chat = memo(() => {
         >
           <Text className='px-2 text-palelime text-4xl font-extralight text-bold'>Hello {userInfo?.user.givenName}!</Text>
           <Text className='px-2 text-white text-lg'>Need Help or Motivation? Ask me about exercise routines, meal plans, or any fitness questions! </Text>
-          <View className='flex-row'>
+          <View className='flex-row mt-10'>
             <ChatQuickAccessCard heading={'Workout Plan'} desc={'Get a 7 day Workout Plan!'} index={0} />
             <ChatQuickAccessCard heading={'Diet Plan'} desc={`Get a full day Diet Plan based on today's progress!`} index={1} />
           </View>
