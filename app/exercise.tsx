@@ -5,7 +5,7 @@ import { useStore } from '@/src/store/store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUtilStore } from '@/src/store/util';
 import * as Progress from 'react-native-progress';
-import Animated, { FadeIn, FadeInRight, FadeOut, FadeOutRight } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInRight, FadeOut, FadeOutRight, LinearTransition } from 'react-native-reanimated';
 import Collapsible from 'react-native-collapsible';
 import Markdown from 'react-native-markdown-display';
 import { router } from 'expo-router';
@@ -50,9 +50,9 @@ const exercise = memo(() => {
 
   const animSource = (currentExercise === 'walk') ? require('../assets/raw/walk.json') : require('../assets/raw/sprint.json')
 
-  useEffect(()=>{
+  useEffect(() => {
     setResponseFetched(false)
-  },[exerciseIntensity, currentExercise])
+  }, [exerciseIntensity, currentExercise])
 
   return (
     <SafeAreaView className='flex-1'>
@@ -121,19 +121,27 @@ const exercise = memo(() => {
               className='p-5 mt-3 bg-darkgray rounded-3xl  mx-1'
             >
               <View className='flex-row justify-between'>
-                <Text className='text-white text-base'>
-                  Prepare yourself with FlexifyAI
-                </Text>
-                <LottieView
-                  autoPlay
-                  ref={animation}
-                  speed={0.5}
-                  style={{
-                    width: 25,
-                    height: 25,
-                  }}
-                  source={require('../assets/raw/gemini.json')}
-                />
+                {(!geminiExpanded || !geminiResponse) ? (
+                  <Animated.Text
+                    entering={FadeIn}
+                    exiting={FadeOut}
+                    className='text-white text-base'
+                  >
+                    Prepare yourself with FlexifyAI
+                  </Animated.Text>
+                ) : null}
+                <Animated.View layout={LinearTransition}>
+                  <LottieView
+                    autoPlay
+                    ref={animation}
+                    speed={0.5}
+                    style={{
+                      width: 25,
+                      height: 25,
+                    }}
+                    source={require('../assets/raw/gemini.json')}
+                  />
+                </Animated.View>
               </View>
               <Collapsible collapsed={!geminiExpanded}>
                 <Animated.View
