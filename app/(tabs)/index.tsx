@@ -10,7 +10,7 @@ import moment from 'moment';
 
 const index = memo(() => {
 
-  const { activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList, exerciseRecord } = useStore((state) => ({
+  const { userData, activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList, exerciseRecord } = useStore((state) => ({
     activity: state.activity,
     userInfo: state.userInfo,
     startStepCounter: state.startStepCounter,
@@ -19,7 +19,8 @@ const index = memo(() => {
     currentExercise: state.currentExercise,
     updateDailyStats: state.updateDailyStats,
     activityList: state.activityList.toReversed(),
-    exerciseRecord: state.exerciseRecord
+    exerciseRecord: state.exerciseRecord,
+    userData: state.userData
   }))
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -145,8 +146,8 @@ const index = memo(() => {
         >
           <Text className='text-white text-lg'>Steps</Text>
           <View className='flex-row justify-between'>
-            <Text className='text-white text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-gray-300'>/ 10000</Text></Text>
-            <Progress.Bar progress={((!isExpanded) ? activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
+            <Text className='text-white text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-gray-300'>/ {userData.stepGoal}</Text></Text>
+            <Progress.Bar progress={((!isExpanded) ? activity.steps : pastActivity.steps) / userData.stepGoal} color='#D5FF5F' height={20} borderRadius={20} className='mx-3 self-center' />
           </View>
         </View>
         <View
@@ -163,11 +164,11 @@ const index = memo(() => {
                 exiting={FadeOutLeft}
               >
                 <Text className=' text-gray-300 mt-2'>Steps</Text>
-                <Text className='text-palelime text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-palelime'>/ 10000</Text></Text>
+                <Text className='text-palelime text-lg font-bold'>{activity.steps} <Text className='text-base font-light text-palelime'>/ {userData.stepGoal}</Text></Text>
                 <Text className=' text-gray-300 mt-2'>Calories</Text>
-                <Text className='text-palelime text-lg font-bold'>{activity.caloriesBurnt} <Text className='text-base font-light text-palelime'>/ 680 Cal</Text></Text>
+                <Text className='text-palelime text-lg font-bold'>{activity.caloriesBurnt} <Text className='text-base font-light text-palelime'>/ {userData.caloriesGoal} Cal</Text></Text>
                 <Text className=' text-gray-300 mt-2'>Distance</Text>
-                <Text className='text-palelime text-lg font-bold'>{activity.distance} <Text className='text-base font-light text-palelime'>/ 3000 m</Text></Text>
+                <Text className='text-palelime text-lg font-bold'>{activity.distance} <Text className='text-base font-light text-palelime'>/ {userData.distanceGoal} m</Text></Text>
               </Animated.View>
             ) : null}
             <Animated.View layout={LinearTransition}>
@@ -180,9 +181,9 @@ const index = memo(() => {
                 }}
                 className='justify-center'
               >
-                <Progress.Circle size={160} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.steps : pastActivity.steps) / 10000} color='#D5FF5F' className='self-center' />
-                <Progress.Circle size={120} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.caloriesBurnt : pastActivity.caloriesBurnt) / 680} color='#D5FF5F' className='self-center absolute' />
-                <Progress.Circle size={80} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.distance : pastActivity.distance) / 3000} color='#D5FF5F' className='self-center absolute' />
+                <Progress.Circle size={160} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.steps : pastActivity.steps) / userData.stepGoal} color='#D5FF5F' className='self-center' />
+                <Progress.Circle size={120} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.caloriesBurnt : pastActivity.caloriesBurnt) / userData.caloriesGoal} color='#D5FF5F' className='self-center absolute' />
+                <Progress.Circle size={80} strokeCap='round' unfilledColor='#656566' borderColor='transparent' thickness={15} progress={((!isExpanded) ? activity.distance : pastActivity.distance) / userData.distanceGoal} color='#D5FF5F' className='self-center absolute' />
               </Pressable>
             </Animated.View>
           </View>

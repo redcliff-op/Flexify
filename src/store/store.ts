@@ -52,7 +52,7 @@ type State = state & actions;
 export const useStore = create<State>((set, get) => ({
 
   userInfo: null,
-  userData: { height: 0, weight: 0 },
+  userData: { weight: 0, height: 0, stepGoal: 10000, caloriesGoal: 700, distanceGoal: 3000 },
   activity: { steps: 0, caloriesBurnt: 0, distance: 0 },
   refActivity: { steps: 0, caloriesBurnt: 0, distance: 0 },
   subscription: null,
@@ -123,7 +123,7 @@ export const useStore = create<State>((set, get) => ({
   signOut: async () => {
     try {
       await GoogleSignin.signOut();
-      set({ userInfo: null, userData: { weight: 0, height: 0 }, exerciseRecord: [] });
+      set({ userInfo: null, userData: { weight: 0, height: 0, stepGoal: 10000, caloriesGoal: 700, distanceGoal: 3000 }, exerciseRecord: [] });
       router.dismissAll();
     } catch (error) {
       console.log(error);

@@ -1,6 +1,9 @@
 type UserData = {
   weight: number,
   height: number,
+  stepGoal: number,
+  caloriesGoal: number,
+  distanceGoal: number
 }
 
 type ExerciseData = {

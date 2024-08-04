@@ -1,10 +1,10 @@
 import { View, Text, Image, Pressable } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useStore } from '@/src/store/store'
 
-const profile = () => {
+const profile = memo(() => {
   const { userInfo, signOut, userData } = useStore((state) => ({
     signOut: state.signOut,
     userInfo: state.userInfo,
@@ -64,6 +64,27 @@ const profile = () => {
             </View>
           </View>
         </Pressable>
+        <Pressable
+          onPress={()=>{
+            router.navigate(`/userdetails`)
+          }}
+        >
+          <View className='bg-darkgray rounded-3xl px-2 py-2 m-2'>
+            <Text className='text-white text-lg ml-3 mb-1'>Workout Preferences</Text>
+            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
+              <Text className='text-white text-lg'>Daily Step Goal</Text>
+              <Text className='text-palelime text-base'>{userData?.stepGoal} </Text>
+            </View>
+            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
+              <Text className='text-white text-lg'>Daily Calorie Target</Text>
+              <Text className='text-palelime text-base'>{userData?.caloriesGoal} cal</Text>
+            </View>
+            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
+              <Text className='text-white text-lg'>Daily Distance Target</Text>
+              <Text className='text-palelime text-base'>{userData?.distanceGoal} m</Text>
+            </View>
+          </View>
+        </Pressable>
       </View>
       <Pressable
         className='bg-palelime rounded-3xl p-5 mx-5 mb-5'
@@ -73,6 +94,6 @@ const profile = () => {
       </Pressable>
     </View>
   )
-}
+})
 
 export default profile
