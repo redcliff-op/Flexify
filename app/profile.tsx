@@ -13,7 +13,7 @@ const profile = memo(() => {
   return (
     <View className='flex-1 bg-background justify-between'>
       <View>
-        <SafeAreaView className=' bg-darkgray px-5 pb-7 rounded-b-[40]'>
+        <SafeAreaView className=' bg-darkgray px-5 mb-2 pb-7 rounded-b-[40]'>
           <View className='flex-row justify-between items-center'>
             <Pressable
               className='self-center'
@@ -38,52 +38,43 @@ const profile = memo(() => {
               className='w-[100] h-[100] rounded-full'
             />
             <View className='self-center ml-3'>
-              <Text className='text-white text-xl font-bold'>
+              <Text className='text-palelime text-xl'>
                 {userInfo?.user.name}
               </Text>
               <Text className='text-gray-300 text-base'>
                 {userInfo?.user.email}
               </Text>
+              <Text className='text-gray-300 text-base'>
+                How are you doing?
+              </Text>
             </View>
           </View>
         </SafeAreaView>
         <Pressable
-          onPress={()=>{
+          className='bg-darkgray items-center justify-between rounded-3xl flex-row px-2 py-5 m-2'
+          onPress={() => {
             router.navigate(`/userdetails`)
           }}
         >
-          <View className='bg-darkgray rounded-3xl px-2 py-2 m-2'>
-            <Text className='text-white text-lg ml-3 mb-1'>Personal Details</Text>
-            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
-              <Text className='text-white text-lg'>Weight</Text>
-              <Text className='text-palelime text-base'>{userData?.weight} KGs</Text>
-            </View>
-            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
-              <Text className='text-white text-lg'>Height</Text>
-              <Text className='text-palelime text-base'>{userData?.height} CMs</Text>
-            </View>
-          </View>
+          <Text className='text-palelime text-lg ml-3 mb-1'>Manage personal details</Text>
+          <Image
+            source={require('../assets/icons/profile.png')}
+            className='w-[25] h-[25] mr-2'
+            tintColor={'#D5FF5F'}
+          />
         </Pressable>
         <Pressable
-          onPress={()=>{
+          onPress={() => {
             router.navigate(`/userdetails`)
           }}
+          className='bg-darkgray justify-between rounded-3xl flex-row px-2 py-5 m-2'
         >
-          <View className='bg-darkgray rounded-3xl px-2 py-2 m-2'>
-            <Text className='text-white text-lg ml-3 mb-1'>Workout Preferences</Text>
-            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
-              <Text className='text-white text-lg'>Daily Step Goal</Text>
-              <Text className='text-palelime text-base'>{userData?.stepGoal} </Text>
-            </View>
-            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
-              <Text className='text-white text-lg'>Daily Calorie Target</Text>
-              <Text className='text-palelime text-base'>{userData?.caloriesGoal} cal</Text>
-            </View>
-            <View className='py-3 px-5 bg-background rounded-3xl my-1'>
-              <Text className='text-white text-lg'>Daily Distance Target</Text>
-              <Text className='text-palelime text-base'>{userData?.distanceGoal} m</Text>
-            </View>
-          </View>
+          <Text className='text-palelime text-lg ml-3 mb-1'>Manage workout preferences</Text>
+          <Image
+            source={require('../assets/icons/run.png')}
+            className='w-[30] h-[30] mr-2'
+            tintColor={'#D5FF5F'}
+          />
         </Pressable>
       </View>
       <Pressable

@@ -70,7 +70,11 @@ const exercise = memo(() => {
       />
       <View className='flex-1 bg-background rounded-t-[20] px-2 py-2 justify-between'>
         {!(isExercising) ? (
-          <Animated.ScrollView entering={FadeInRight} exiting={FadeOutRight}>
+          <Animated.ScrollView
+            entering={FadeInRight}
+            exiting={FadeOutRight}
+            showsVerticalScrollIndicator={false}
+          >
             <Text className='text-white text-xl px-2 my-3'>
               Get ready for a {currentExercise}!
             </Text>

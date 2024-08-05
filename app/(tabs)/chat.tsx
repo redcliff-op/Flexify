@@ -23,9 +23,8 @@ const chat = memo(() => {
   return (
     <SafeAreaView className=' justify-between flex-1 px-4 bg-background'>
       <View className='flex-initial mb-2 '>
-        <Text className='mb-2 text-white text-xl font-bold'>
-          Flexify AI !
-        </Text>
+        <Text className='mb text-white text-xl font-bold'>Flexify AI !</Text>
+        <Text className='text-gray-300 text-base'>Ask my Anything!</Text>
         {(messages?.length !== 0) ? (
           <Animated.FlatList
             entering={FadeIn}
