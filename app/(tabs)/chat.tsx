@@ -23,8 +23,23 @@ const chat = memo(() => {
   return (
     <SafeAreaView className=' justify-between flex-1 px-4 bg-background'>
       <View className='flex-initial mb-2 '>
-        <Text className='mb text-white text-xl font-bold'>Flexify AI !</Text>
-        <Text className='text-gray-300 mb-2 text-base'>Ask my Anything!</Text>
+        <View className='flex-row justify-between items-center'>
+          <View>
+            <Text className='mb text-white text-xl font-bold'>Flexify AI !</Text>
+            <Text className='text-gray-300 mb-2 text-base'>Ask my Anything!</Text>
+          </View>
+          <Pressable
+            onPress={()=>{
+              useStore.setState({messages: []})
+            }}
+          >
+            <Image
+              className='w-[30] h-[30]'
+              tintColor={'#D5FF5F'}
+              source={require('../../assets/icons/reseticon.png')}
+            />
+          </Pressable>
+        </View>
         {(messages?.length !== 0) ? (
           <Animated.FlatList
             entering={FadeIn}
