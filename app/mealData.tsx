@@ -6,7 +6,7 @@ import React, { memo, useEffect, useRef, useState } from 'react'
 import { Text, Image, ScrollView, View, Pressable } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import Markdown from 'react-native-markdown-display'
-import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut, LinearTransition } from 'react-native-reanimated'
+import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut, FadeOutDown, FadeOutUp, LinearTransition } from 'react-native-reanimated'
 import YoutubePlayer from "react-native-youtube-iframe"
 
 const mealData = memo(() => {
@@ -55,30 +55,31 @@ const mealData = memo(() => {
 
   return (
     mealData ? (
-      <View className='flex-1 bg-background'>
-        <Animated.Image
-          entering={FadeInUp}
-          source={{ uri: mealData?.strMealThumb?.toString() }}
-          className='w-[100%] h-[250]'
-        />
-        <Animated.View
-          entering={FadeInDown}
-          className='-mt-10 rounded-t-3xl flex-1 bg-background pt-4 px-4'>
-          <ScrollView showsVerticalScrollIndicator={false} >
-            <Text className=' mb-2 px-2 text-2xl font-semibold text-white'>
-              {mealData?.strMeal}
-            </Text>
-            <View className='mb-2 flex-row items-center'>
-              <View className='flex-row'>
-                <View className='mr-2 rounded-2xl px-3 py-2 bg-darkgray'>
-                  <Text className='text-base text-gray-200'>
-                    {mealData?.strArea}
-                  </Text>
-                </View>
-                <View className=' rounded-2xl px-3 py-2 bg-darkgray'>
-                  <Text className='text-base text-gray-200'>
-                    {mealData?.strCategory}
-                  </Text>
+      <Animated.View
+        className=' flex-1 bg-background px-2'>
+        <ScrollView showsVerticalScrollIndicator={false} >
+          <Animated.Image
+            entering={FadeInUp}
+            source={{ uri: mealData?.strMealThumb?.toString() }}
+            className='rounded-b-[40] w-[100%] self-center h-[250] mb-2 opacity-80'
+          />
+          <Animated.View entering={FadeInDown}>
+            <View className='bg-darkgray rounded-t-[40] mb-2 rounded-b-[40] p-4'>
+              <Text className=' mb-2 px-2 text-2xl font-medium text-white'>
+                {mealData?.strMeal}
+              </Text>
+              <View className=' flex-row items-center px-2 mb-2'>
+                <View className='flex-row'>
+                  <View className='mr-2 rounded-xl border-palelime px-3 py-2 bg-black' style={{ borderWidth: 1 }}>
+                    <Text className='text-base text-gray-200'>
+                      {mealData?.strArea}
+                    </Text>
+                  </View>
+                  <View className=' rounded-xl px-3 py-2 border-palelime bg-black' style={{ borderWidth: 1 }}>
+                    <Text className='text-base text-gray-200'>
+                      {mealData?.strCategory}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
@@ -90,14 +91,14 @@ const mealData = memo(() => {
                   setResponseFetched(true)
                 }
               }}
-              className='p-4 mb-2 bg-darkgray rounded-2xl'
+              className='p-4 mb-2 bg-darkgray rounded-t-[40] rounded-b-[40]'
             >
               <View className='flex-row justify-between items-center'>
                 {(!geminiExpanded || !geminiResponse) ? (
                   <Animated.Text
                     entering={FadeIn}
                     exiting={FadeOut}
-                    className='text-palelime font-semibold text-lg'
+                    className=' px-2 py-2 text-palelime font-semibold text-lg'
                   >
                     Get Nutritional Value
                   </Animated.Text>
@@ -165,71 +166,82 @@ const mealData = memo(() => {
             </Pressable>
             <Pressable
               onPress={() => {
-                setIngredExpanded(!ingredExpanded)
-              }}
-              className='p-4 mb-2 flex-row justify-between items-center bg-darkgray rounded-2xl'
-            >
-              <Text className='text-palelime font-semibold text-lg'>
-                Ingredients
-              </Text>
-              <Image
-                style={{ transform: [{ rotate: (ingredExpanded) ? '90deg' : '0deg' }] }}
-                source={require('../assets/icons/rightarrow.png')}
-                className='w-[20] h-[20]'
-                tintColor={'#D5FF5F'}
-              />
-            </Pressable>
-            <Collapsible collapsed={!ingredExpanded}>
-              {ingredients.map((item, index) => (
-                <View key={index} className='bg-darkgray mb-2 px-3 py-2 rounded-2xl'>
-                  <View className=' items-center flex-row justify-between'>
-                    <View>
-                      <Text className='text-palelime text-base'>
-                        {item.ingredient}
-                      </Text>
-                      <Text className='text-gray-300 text-base'>
-                        {item.measure}
-                      </Text>
-                    </View>
-                    <View className='rounded-full bg-black px-5 py-3'>
-                      <Text className='text-palelime text-base'>{index}</Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </Collapsible>
-            <Pressable
-              onPress={() => {
                 setInstrucExpanded(!instrucExpanded)
               }}
-              className='p-4 mb-2 flex-row justify-between items-center bg-darkgray rounded-2xl'
+              className='p-4 mb-2 justify-between bg-darkgray rounded-t-[40] rounded-b-[40]'
             >
-              <Text className='text-palelime font-semibold text-lg'>
-                Instructions
-              </Text>
-              <Image
-                style={{ transform: [{ rotate: (instrucExpanded) ? '90deg' : '0deg' }] }}
-                source={require('../assets/icons/rightarrow.png')}
-                className='w-[20] h-[20]'
-                tintColor={'#D5FF5F'}
-              />
-            </Pressable>
-            <Collapsible collapsed={!instrucExpanded}>
-              <View className='p-3 bg-darkgray rounded-2xl'>
-                <Text className='text-gray-200 text-base'>
-                  {mealData?.strInstructions}
+              <View className=' p-2 flex-row items-center justify-between'>
+                <Text className='text-palelime font-semibold text-lg'>
+                  Instructions
                 </Text>
+                <Image
+                  style={{ transform: [{ rotate: (instrucExpanded) ? '90deg' : '0deg' }] }}
+                  source={require('../assets/icons/rightarrow.png')}
+                  className='w-[20] h-[20]'
+                  tintColor={'#D5FF5F'}
+                />
               </View>
-            </Collapsible>
+              <Collapsible collapsed={!instrucExpanded}>
+                <View className='p-3 bg-darkgray rounded-2xl'>
+                  <Text className='text-gray-200 text-base'>
+                    {mealData?.strInstructions}
+                  </Text>
+                </View>
+              </Collapsible>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setIngredExpanded(!ingredExpanded)
+              }}
+              className='py-4 mb-2 justify-between bg-darkgray rounded-t-[40] rounded-b-[40]'
+            >
+              <View className='px-6 py-2 first-letter:flex-row items-center justify-between'>
+                <Text className=' text-palelime font-semibold text-lg'>
+                  Ingredients
+                </Text>
+                <Image
+                  style={{ transform: [{ rotate: (ingredExpanded) ? '90deg' : '0deg' }] }}
+                  source={require('../assets/icons/rightarrow.png')}
+                  className='w-[20] h-[20]'
+                  tintColor={'#D5FF5F'}
+                />
+              </View>
+              <Collapsible collapsed={!ingredExpanded}>
+                <View className='my-1'></View>
+                {ingredients.map((item, index) => (
+                  <View key={index} className='bg-background mx-2 mb-2 px-2 py-3 rounded-3xl'>
+                    <View className=' items-center flex-row justify-between'>
+                      <View className='flex-row'>
+                        <Image
+                          className='w-[60] h-[60] mr-2'
+                          source={{ uri: `https://www.themealdb.com/images/ingredients/${item.ingredient}-Small.png` }}
+                        />
+                        <View>
+                          <Text className='text-palelime text-base'>
+                            {item.ingredient}
+                          </Text>
+                          <Text className='text-gray-300 text-base'>
+                            {item.measure}
+                          </Text>
+                        </View>
+                      </View>
+                      <View className='rounded-full bg-black px-5 py-3'>
+                        <Text className='text-palelime text-base'>{index+1}</Text>
+                      </View>
+                    </View>
+                  </View>
+                ))}
+              </Collapsible>
+            </Pressable>
             <YoutubePlayer
               webViewStyle={{ marginTop: 10 }}
               height={300}
               videoId={extractYtID(mealData?.strYoutube || "")}
               play={false}
             />
-          </ScrollView>
-        </Animated.View >
-      </View >
+          </Animated.View>
+        </ScrollView>
+      </Animated.View >
     ) : (
       <Animated.View
         entering={FadeIn}
