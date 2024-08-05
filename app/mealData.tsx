@@ -6,7 +6,7 @@ import React, { memo, useEffect, useRef, useState } from 'react'
 import { Text, Image, ScrollView, View, Pressable } from 'react-native'
 import Collapsible from 'react-native-collapsible'
 import Markdown from 'react-native-markdown-display'
-import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated'
+import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut, LinearTransition } from 'react-native-reanimated'
 import YoutubePlayer from "react-native-youtube-iframe"
 
 const mealData = memo(() => {
@@ -85,68 +85,84 @@ const mealData = memo(() => {
             <Pressable
               onPress={() => {
                 setGeminiExpanded(!geminiExpanded)
-                if (!responseFetched) {
+                if (!responseFetched && !geminiExpanded) {
                   loadGeminiResponse()
                   setResponseFetched(true)
                 }
               }}
-              className='p-4 mb-2 flex-row justify-between items-center bg-darkgray rounded-2xl'
+              className='p-4 mb-2 bg-darkgray rounded-2xl'
             >
-              <Text className='text-palelime font-semibold text-lg'>
-                Nutritional Value
-              </Text>
-              <LottieView
-                autoPlay
-                ref={animation}
-                speed={0.2}
-                style={{
-                  width: 22,
-                  height: 22,
-                }}
-                source={require('../assets/raw/gemini.json')}
-              />
-            </Pressable>
-            <Collapsible collapsed={!geminiExpanded}>
-              {geminiLoading ? (
-                <View className='w-max items-center justify-center rounded-2xl mb-2 p-10 bg-darkgray'>
+              <View className='flex-row justify-between items-center'>
+                {(!geminiExpanded || !geminiResponse) ? (
+                  <Animated.Text
+                    entering={FadeIn}
+                    exiting={FadeOut}
+                    className='text-palelime font-semibold text-lg'
+                  >
+                    Get Nutritional Value
+                  </Animated.Text>
+                ) : null}
+                <Animated.View layout={LinearTransition}>
                   <LottieView
                     autoPlay
                     ref={animation}
+                    speed={0.5}
                     style={{
-                      width: 200,
-                      height: 200,
+                      width: 25,
+                      height: 25,
                     }}
-                    source={require('../assets/raw/ailoading.json')}
+                    source={require('../assets/raw/gemini.json')}
                   />
-                </View>
-              ) : (
-                <View className='w-max px-3 rounded-2xl mb-2 py-2 bg-darkgray'>
-                  <Markdown
-                    style={{
-                      body: {
-                        color: 'white',
-                        fontSize: 17,
-                      },
-                    }}
-                  >
-                    {geminiResponse}
-                  </Markdown>
-                  <Pressable
-                    onPress={() => {
-                      router.navigate(`/(tabs)/chat`)
-                    }}
-                    className='mb-2 flex-row items-center justify-between px-3 py-2 bg-palelime rounded-full'
-                  >
-                    <Text className='text-black font-bold text-base'>Continue In chat</Text>
-                    <Image
-                      className='w-[20] h-[20]'
-                      tintColor={'black'}
-                      source={require('../assets/icons/rightarrow.png')}
-                    />
-                  </Pressable>
-                </View>
-              )}
-            </Collapsible>
+                </Animated.View>
+              </View>
+              <Collapsible collapsed={!geminiExpanded}>
+                <Animated.View
+                  className='bg-darkgray rounded-3xl mt-2 mx-1 '
+                  entering={FadeIn}
+                  exiting={FadeOut}
+                >
+                  {geminiLoading ? (
+                    <View className='w-max items-center justify-center rounded-2xl mb-2 p-10 bg-darkgray'>
+                      <LottieView
+                        autoPlay
+                        ref={animation}
+                        style={{
+                          width: 200,
+                          height: 200,
+                        }}
+                        source={require('../assets/raw/ailoading.json')}
+                      />
+                    </View>
+                  ) : (
+                    <View className='w-max rounded-2xl mb-2 bg-darkgray'>
+                      <Markdown
+                        style={{
+                          body: {
+                            color: 'white',
+                            fontSize: 17,
+                          },
+                        }}
+                      >
+                        {geminiResponse}
+                      </Markdown>
+                      <Pressable
+                        onPress={() => {
+                          router.navigate(`/(tabs)/chat`)
+                        }}
+                        className='flex-row items-center justify-between px-3 py-2 bg-palelime rounded-full'
+                      >
+                        <Text className='text-black font-bold text-base'>Continue In chat</Text>
+                        <Image
+                          className='w-[20] h-[20]'
+                          tintColor={'black'}
+                          source={require('../assets/icons/rightarrow.png')}
+                        />
+                      </Pressable>
+                    </View>
+                  )}
+                </Animated.View>
+              </Collapsible>
+            </Pressable>
             <Pressable
               onPress={() => {
                 setIngredExpanded(!ingredExpanded)
