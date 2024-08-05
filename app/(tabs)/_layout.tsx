@@ -27,20 +27,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="meals"
-        options={{
-          title: 'meals',
-          tabBarIcon: ({ color, focused }) => (
-            <Image source={require('../../assets/icons/meal.png')} className='w-[30] h-[30]' tintColor={color}/>
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="stats"
         options={{
           title: 'stats',
           tabBarIcon: ({ color, focused }) => (
             <Image source={require('../../assets/icons/stats.png')} className='w-[30] h-[30]' tintColor={color}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="meals"
+        options={{
+          title: 'meals',
+          tabBarIcon: ({ color, focused }) => (
+            <Image source={require('../../assets/icons/meal.png')} className='w-[30] h-[30]' tintColor={color}/>
           ),
         }}
       />
