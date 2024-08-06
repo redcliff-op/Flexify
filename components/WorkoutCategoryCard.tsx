@@ -25,7 +25,7 @@ const WorkoutCategoryCard = ({ index }: WorkoutCategoryProps) => {
         source={image}
       >
         <View className='flex-1 justify-end'>
-          <View className=' w-max bg-gray-900 px-2 py-3' style={{ backgroundColor: 'rgba(31, 41, 55, 0.70)' }}>
+          <View className=' rounded-b-[20] w-max bg-gray-900 px-2 py-3' style={{ backgroundColor: 'rgba(31, 41, 55, 0.70)' }}>
             <Text className='text-palelime font-bold text-base text-center'>{title}</Text>
           </View>
         </View>
