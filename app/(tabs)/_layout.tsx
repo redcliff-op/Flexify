@@ -27,6 +27,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="workouts"
+        options={{
+          title: 'Workouts',
+          tabBarIcon: ({ color, focused }) => (
+            <Image source={require('../../assets/icons/workouts.png')} className='w-[30] h-[30]' tintColor={color}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="stats"
         options={{
           title: 'stats',

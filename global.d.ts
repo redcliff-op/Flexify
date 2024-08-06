@@ -1,3 +1,5 @@
+import { ImageSourcePropType } from "react-native"
+
 type UserData = {
   weight: number,
   height: number,
@@ -93,4 +95,10 @@ type ChatMessage = {
   message: string,
   ai?: boolean = false,
   time: string
+}
+
+type WorkoutDesc = {
+  title: string,
+  image: ImageSourcePropType,
+  desc: string
 }
