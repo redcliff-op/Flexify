@@ -8,7 +8,7 @@ const workouts = memo(() => {
     <SafeAreaView className='flex-1 px-4 bg-background '>
       <Text className='text-white text-xl font-bold'>Workout!</Text>
       <Text className='text-gray-300 text-base '>Choose what to train!</Text>
-      <ScrollView showsHorizontalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <WorkoutCategoryCard
           index={0}
         />

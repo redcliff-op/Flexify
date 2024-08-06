@@ -88,7 +88,7 @@ const performWorkouts = memo(() => {
 
   return (
     <View className='flex-1 px-2 bg-background'>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Animated.Image
           entering={FadeInUp}
           source={workout.image}
