@@ -3,22 +3,22 @@ import { WorkoutDesc, WorkoutStepsInfo } from "./global";
 const fullBodyWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Squats',
-    reps: 15,
+    reps: '15 reps',
     desc: 'A lower body exercise that targets the quadriceps, hamstrings, and glutes. Focus on proper form to maximize benefits and avoid injury.'
   },
   {
     title: 'Push-Ups',
-    reps: 12,
+    reps: '12 reps',
     desc: 'An upper body exercise that strengthens the chest, shoulders, and triceps. Maintain a straight body line to maximize effectiveness.'
   },
   {
     title: 'Plank',
-    reps: 30, 
+    reps: '30 seconds',
     desc: 'A core exercise that engages the abdominal muscles, lower back, and shoulders. Hold a straight body position to build core strength and stability.'
   },
   {
     title: 'Lunges',
-    reps: 12,
+    reps: '12 reps',
     desc: 'A lower body exercise that targets the quadriceps, hamstrings, and glutes. Ensure proper alignment to protect the knees and maximize muscle engagement.'
   }
 ];
@@ -26,46 +26,45 @@ const fullBodyWorkout: WorkoutStepsInfo[] = [
 const chestWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Standard Push-Ups',
-    reps: 15,
+    reps: '15 reps',
     desc: 'A basic push-up that targets the chest, shoulders, and triceps. Maintain a straight body and engage the core throughout.'
   },
   {
     title: 'Incline Push-Ups',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Push-ups with hands elevated to focus on the upper chest. Use a bench or step for elevation.'
   },
   {
     title: 'Decline Push-Ups',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Push-ups with feet elevated to emphasize the lower chest. Ensure a controlled movement for better muscle engagement.'
   },
   {
     title: 'Diamond Push-Ups',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Push-ups with hands close together to target the inner chest and triceps.'
   },
 ];
 
-
 const bicepsWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Chin-Ups',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Pull-ups with an underhand grip to focus on the biceps. Engage the core and pull yourself up until your chin is over the bar.'
   },
   {
     title: 'Bicep Curls',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Curls using bodyweight or resistance bands to target the biceps. Keep elbows close to the body and focus on a full range of motion.'
   },
   {
     title: 'Hammer Curls',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Curls with palms facing each other to engage the brachialis muscle in addition to the biceps.'
   },
   {
     title: 'Isometric Bicep Hold',
-    reps: 30,
+    reps: '30 seconds',
     desc: 'Hold the curl position with arms bent to build endurance and strength in the biceps.'
   }
 ];
@@ -73,22 +72,22 @@ const bicepsWorkout: WorkoutStepsInfo[] = [
 const tricepsWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Tricep Dips',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Dips using parallel bars or a sturdy chair to target the triceps. Keep elbows close to the body and lower down until arms are at 90 degrees.'
   },
   {
     title: 'Tricep Pushdowns',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Using a resistance band or cable machine, push the band or cable down to extend the triceps. Focus on a full range of motion.'
   },
   {
     title: 'Overhead Tricep Extensions',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Extend the arms overhead and lower the weight behind the head to target the triceps. Maintain a stable core throughout.'
   },
   {
     title: 'Close-Grip Push-Ups',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Push-ups with hands close together to emphasize the triceps. Keep your body straight and engage the triceps throughout the movement.'
   }
 ];
@@ -96,46 +95,45 @@ const tricepsWorkout: WorkoutStepsInfo[] = [
 const backWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Pull-Ups',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Pull-ups targeting the upper back and lats. Use an overhand grip and pull up until chin is over the bar.'
   },
   {
     title: 'Bodyweight Rows',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Using a bar or low surface, pull your chest up towards the bar to engage the back muscles. Maintain a straight body line.'
   },
   {
     title: 'Supermans',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Lie face down and lift your arms and legs off the ground simultaneously to target the lower back.'
   },
   {
     title: 'Reverse Snow Angels',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Lying face down, move your arms in a snow angel motion to strengthen the upper back and rear shoulders.'
   }
 ];
 
-
 const shouldersWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Pike Push-Ups',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Push-ups with hips elevated to target the shoulder muscles. Focus on pressing down and bringing your head close to the floor.'
   },
   {
     title: 'Handstand Push-Ups',
-    reps: 10,
+    reps: '10 reps',
     desc: 'Perform push-ups while in a handstand position to intensely target the shoulders. Use a wall for support if needed.'
   },
   {
     title: 'Front Raises',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Lift weights or resistance bands straight up in front of you to engage the front deltoids.'
   },
   {
     title: 'Lateral Raises',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Raise weights or bands out to the sides to target the lateral deltoids and widen the shoulders.'
   }
 ];
@@ -143,28 +141,51 @@ const shouldersWorkout: WorkoutStepsInfo[] = [
 const legWorkout: WorkoutStepsInfo[] = [
   {
     title: 'Squats',
-    reps: 15-20,
+    reps: '15-20 reps',
     desc: 'A fundamental lower body exercise that targets the quadriceps, hamstrings, and glutes. Focus on depth and form.'
   },
   {
     title: 'Lunges',
-    reps: 15,
+    reps: '15 reps',
     desc: 'Step forward into a lunge to work the quads, hamstrings, and glutes. Alternate legs and keep your torso upright.'
   },
   {
     title: 'Bulgarian Split Squats',
-    reps: 12,
+    reps: '12 reps',
     desc: 'Rear foot elevated squats to isolate the quads and glutes. Ensure balance and control throughout the movement.'
   },
   {
     title: 'Calf Raises',
-    reps: 20,
+    reps: '20 reps',
     desc: 'Raise up onto the toes to work the calf muscles. Perform on a flat surface or elevated for a greater range of motion.'
   },
   {
     title: 'Glute Bridges',
-    reps: 20,
+    reps: '20 reps',
     desc: 'Lift your hips towards the ceiling while lying on your back to target the glutes and hamstrings. Squeeze the glutes at the top.'
+  }
+];
+
+const abdominalWorkout: WorkoutStepsInfo[] = [
+  {
+    title: 'Crunches',
+    reps: '20 reps',
+    desc: 'Lie on your back with knees bent and feet flat on the floor. Place your hands behind your head and lift your shoulders towards your knees. Engage your core and lower back down slowly.'
+  },
+  {
+    title: 'Leg Raises',
+    reps: '15 reps',
+    desc: 'Lie on your back with legs extended and arms by your sides. Lift your legs towards the ceiling while keeping them straight, then slowly lower them back down without touching the floor.'
+  },
+  {
+    title: 'Bicycle Crunches',
+    reps: '20 reps (10 per side)',
+    desc: 'Lie on your back with hands behind your head and legs elevated, bent at 90 degrees. Alternate bringing your elbows towards the opposite knee while extending the other leg.'
+  },
+  {
+    title: 'Plank',
+    reps: '30 seconds',
+    desc: 'Hold a push-up position with your body in a straight line from head to heels. Engage your core and maintain the position without letting your hips sag.'
   }
 ];
 
@@ -211,5 +232,11 @@ export const workoutDesc: WorkoutDesc[] = [
     image: require('./assets/images/leg.jpg'),
     desc: 'A leg workout targets the major muscle groups in the lower body, including the quadriceps, hamstrings, glutes, and calves. Exercises like squats, lunges, and deadlifts focus on these muscles, enhancing overall leg strength, power, and endurance. Strengthening the legs improves mobility, supports better balance and stability, and contributes to a strong foundation for athletic performance. Additionally, a comprehensive leg workout boosts metabolism, aids in injury prevention, and helps in achieving a balanced, well-proportioned physique.',
     steps: legWorkout
+  },
+  {
+    title: 'Abdominal',
+    image: require('./assets/images/abdominal.jpg'),
+    desc: 'An abdominal workout targets the core muscles, including the rectus abdominis, obliques, and transverse abdominis. Strengthening these muscles is crucial for overall core stability, posture, and balance. Key exercises such as crunches, leg raises, and planks enhance core strength, improve functional movement, and contribute to a well-defined midsection. A strong core supports better performance in various physical activities and helps in injury prevention by stabilizing the spine and pelvis.',
+    steps: abdominalWorkout
   }
 ]

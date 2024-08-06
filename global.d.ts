@@ -99,7 +99,7 @@ type ChatMessage = {
 
 type WorkoutStepsInfo = {
   title: string,
-  reps: number,
+  reps: string,
   desc: string
 }
 

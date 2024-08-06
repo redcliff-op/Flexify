@@ -30,6 +30,9 @@ const workouts = memo(() => {
         <WorkoutCategoryCard
           index={6}
         />
+        <WorkoutCategoryCard
+          index={7}
+        />
       </ScrollView>
     </SafeAreaView>
   )

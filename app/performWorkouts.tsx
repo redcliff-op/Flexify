@@ -124,7 +124,7 @@ const performWorkouts = memo(() => {
               >
                 <Text className='text-palelime text-base '>{item.title}</Text>
                 <Text className='text-gray-300 mb-3 text-base '>{item.desc}</Text>
-                <Text className='text-palelime text-base '>{item.reps} Reps</Text>
+                <Text className='text-palelime text-base '>{item.reps}</Text>
               </View>
             )}
             <View
