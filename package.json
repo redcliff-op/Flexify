@@ -41,6 +41,7 @@
     "react-dom": "18.2.0",
     "react-native": "0.74.2",
     "react-native-collapsible": "^1.6.1",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-gifted-charts": "^1.4.17",
     "react-native-markdown-display": "^7.0.2",
@@ -53,7 +54,8 @@
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
     "react-native-youtube-iframe": "^2.3.0",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "expo-image-picker": "~15.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

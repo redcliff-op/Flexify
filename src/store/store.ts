@@ -6,6 +6,8 @@ import firestore from '@react-native-firebase/firestore';
 import { Alert } from "react-native";
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import { GEMINI_API_KEY } from "@/Keys";
+import { UserData, Activity, ExerciseData, Meal, MealData, ChatMessage } from "@/global";
+import RNFS from 'react-native-fs';
 
 let subscription: Pedometer.Subscription;
 
@@ -43,7 +45,7 @@ type actions = {
   fetchCat: (category: string) => Promise<void>,
   fetchIngred: (ingred: string) => Promise<void>,
   fetchMealData: (id: string) => Promise<void>,
-  getGeminiResponse: (prompt: string) => Promise<string>,
+  getGeminiResponse: (prompt: string, image?: string | null) => Promise<string>,
   feedInitialGeminiData: (activityList: Activity[]) => Promise<void>
 }
 
@@ -309,7 +311,7 @@ export const useStore = create<State>((set, get) => ({
       console.log(error)
     }
   },
-  getGeminiResponse: async (prompt: string): Promise<string> => {
+  getGeminiResponse: async (prompt: string, image: string | null = null): Promise<string> => {
     set({ geminiLoading: true });
     try {
       const history = get().contextHistory
@@ -318,11 +320,23 @@ export const useStore = create<State>((set, get) => ({
       const chat = model.startChat({
         history: history,
       })
-      const result = await chat.sendMessage(prompt)
+      let result;
+      if (image) {
+        const fsImage = await RNFS.readFile(image, 'base64');
+        const img = {
+          inlineData: {
+            data: fsImage,
+            mimeType: "image/png",
+          },
+        };
+        result = await chat.sendMessage(["Which food is this? Please Fetch nutritional info about this food even if its not accurate, is this a health food?", img])
+      } else {
+        result = await chat.sendMessage(prompt)
+      }
       const response = result.response;
       const text = response.text();
       set({ messages: [...get().messages, { message: text, ai: true, time: new Date().toLocaleTimeString().slice(0, -3) }] });
-      set({contextHistory: history})
+      set({ contextHistory: history })
       return text;
     } catch (error) {
       console.log(error);
@@ -331,7 +345,7 @@ export const useStore = create<State>((set, get) => ({
       set({ geminiLoading: false });
     }
   },
-  feedInitialGeminiData: async(activityList: Activity[]) => {
+  feedInitialGeminiData: async (activityList: Activity[]) => {
     try {
       const history = get().contextHistory
       const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
@@ -340,7 +354,7 @@ export const useStore = create<State>((set, get) => ({
         history: history,
       })
       await chat.sendMessage(`This is my all time workout statistics based off of which I can ask questions so remember it. ${JSON.stringify(activityList)}`)
-      set({contextHistory: history})
+      set({ contextHistory: history })
     } catch (error) {
       console.log(error);
     }
