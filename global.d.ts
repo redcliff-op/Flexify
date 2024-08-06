@@ -97,8 +97,15 @@ type ChatMessage = {
   time: string
 }
 
+type WorkoutStepsInfo = {
+  title: string,
+  reps: number,
+  desc: string
+}
+
 type WorkoutDesc = {
   title: string,
   image: ImageSourcePropType,
-  desc: string
+  desc: string,
+  steps: WorkoutStepsInfo[]
 }

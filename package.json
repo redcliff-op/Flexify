@@ -25,11 +25,13 @@
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.15",
     "expo-font": "~12.0.7",
+    "expo-image-picker": "~15.0.7",
     "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
     "expo-navigation-bar": "~3.0.6",
     "expo-router": "~3.5.15",
     "expo-sensors": "~13.0.8",
+    "expo-speech": "~12.0.2",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.6",
@@ -54,8 +56,7 @@
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
     "react-native-youtube-iframe": "^2.3.0",
-    "zustand": "^4.5.2",
-    "expo-image-picker": "~15.0.7"
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
