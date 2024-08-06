@@ -46,33 +46,35 @@ const performWorkouts = memo(() => {
     });
   };
   const handleWorkout = async () => {
-    if (!rest) {
-      if (progress === -1) {
-        Speech.speak(
-          `You are about to Start ${workout.title} Workout. Remember, its always good to warm your body up before any exercise. click the warm up button to do so, otherwise click start to start the exercise. All the Best!, `
-        )
-        setProgress(progress + 1)
-        return;
-      }
-      if (progress === 4) {
-        Speech.speak(
-          `Voila! You just finished your ${workout.title} Workout! Think you can do more? Go ahead!`
-        )
-        setProgress(progress + 1)
-        return;
-      }
-      if (progress === 0 || progress === 5) {
-        setRest(false)
-      } else {
-        await beginRest()
-      }
-      if (progress < 5) {
-        Speech.speak("Lets Start " + workout.steps[progress].title)
-        Speech.speak(workout.steps[progress].desc)
-        Speech.speak("Click Done after the exercise")
-        setProgress(progress + 1)
-      } else if (progress === 5) {
-        setProgress(-1)
+    if (!(await Speech.isSpeakingAsync())) {
+      if (!rest) {
+        if (progress === -1) {
+          Speech.speak(
+            `You are about to Start ${workout.title} Workout. Remember, its always good to warm your body up before any exercise. click the warm up button to do so, otherwise click start to start the exercise. All the Best!, `
+          )
+          setProgress(progress + 1)
+          return;
+        }
+        if (progress === 4) {
+          Speech.speak(
+            `Voila! You just finished your ${workout.title} Workout! Think you can do more? Go ahead!`
+          )
+          setProgress(progress + 1)
+          return;
+        }
+        if (progress === 0 || progress === 5) {
+          setRest(false)
+        } else {
+          await beginRest()
+        }
+        if (progress < 5) {
+          Speech.speak("Lets Start " + workout.steps[progress].title)
+          Speech.speak(workout.steps[progress].desc)
+          Speech.speak("Click Done after the exercise")
+          setProgress(progress + 1)
+        } else if (progress === 5) {
+          setProgress(-1)
+        }
       }
     }
   }
@@ -158,7 +160,7 @@ const performWorkouts = memo(() => {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: `${(progress/5) * 100}%`,
+                width: `${(progress / 5) * 100}%`,
                 height: '100%',
                 backgroundColor: '#4CAF50',
                 borderRadius: 100,
