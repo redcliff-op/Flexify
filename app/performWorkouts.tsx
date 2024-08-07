@@ -15,6 +15,37 @@ const performWorkouts = memo(() => {
   const [timer, setTimer] = useState<number>(60)
   let intervalId: NodeJS.Timeout;
 
+  const timerExec = (): Promise<void> => {
+    setTimer(60);
+    return new Promise((resolve) => {
+      intervalId = setInterval(() => {
+        setTimer(prevTimer => {
+          if (prevTimer === 30) {
+            Speech.speak('30 more seconds')
+          }
+          if (prevTimer === 4) {
+            Speech.speak("3")
+          }
+          if (prevTimer === 3) {
+            Speech.speak("2")
+          }
+          if (prevTimer === 2) {
+            Speech.speak("1")
+          }
+          if(prevTimer === 1){
+            Speech.speak(`You are done with ${workout.steps[progress].title}`)
+          }
+          if (prevTimer <= 1) {
+            clearInterval(intervalId as NodeJS.Timeout);
+            resolve();
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    });
+  };
+
   const beginRest = (): Promise<void> => {
     setRest(true);
     setTimer(60);
@@ -74,6 +105,9 @@ const performWorkouts = memo(() => {
           setProgress(progress + 1)
         } else if (progress === 5) {
           setProgress(-1)
+        }
+        if(workout.steps[progress]?.timer === true){
+          await timerExec()
         }
       }
     }

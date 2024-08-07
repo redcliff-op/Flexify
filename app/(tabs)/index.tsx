@@ -7,6 +7,7 @@ import { useStore } from '@/src/store/store';
 import Animated, { FadeInLeft, FadeOutLeft, LinearTransition } from 'react-native-reanimated';
 import Collapsible from 'react-native-collapsible';
 import moment from 'moment';
+import { Activity, ExerciseData } from '@/global';
 
 const index = memo(() => {
 

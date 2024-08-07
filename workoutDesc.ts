@@ -13,8 +13,9 @@ const fullBodyWorkout: WorkoutStepsInfo[] = [
   },
   {
     title: 'Plank',
-    reps: '30 seconds',
-    desc: 'A core exercise that engages the abdominal muscles, lower back, and shoulders. Hold a straight body position to build core strength and stability.'
+    reps: '60 seconds',
+    desc: 'A core exercise that engages the abdominal muscles, lower back, and shoulders. Hold a straight body position to build core strength and stability.',
+    timer: true
   },
   {
     title: 'Lunges',
@@ -64,8 +65,9 @@ const bicepsWorkout: WorkoutStepsInfo[] = [
   },
   {
     title: 'Isometric Bicep Hold',
-    reps: '30 seconds',
-    desc: 'Hold the curl position with arms bent to build endurance and strength in the biceps.'
+    reps: '60 seconds',
+    desc: 'Hold the curl position with arms bent to build endurance and strength in the biceps.',
+    timer: true
   }
 ];
 
@@ -150,11 +152,6 @@ const legWorkout: WorkoutStepsInfo[] = [
     desc: 'Step forward into a lunge to work the quads, hamstrings, and glutes. Alternate legs and keep your torso upright.'
   },
   {
-    title: 'Bulgarian Split Squats',
-    reps: '12 reps',
-    desc: 'Rear foot elevated squats to isolate the quads and glutes. Ensure balance and control throughout the movement.'
-  },
-  {
     title: 'Calf Raises',
     reps: '20 reps',
     desc: 'Raise up onto the toes to work the calf muscles. Perform on a flat surface or elevated for a greater range of motion.'
@@ -184,8 +181,9 @@ const abdominalWorkout: WorkoutStepsInfo[] = [
   },
   {
     title: 'Plank',
-    reps: '30 seconds',
-    desc: 'Hold a push-up position with your body in a straight line from head to heels. Engage your core and maintain the position without letting your hips sag.'
+    reps: '60 seconds',
+    desc: 'Hold a push-up position with your body in a straight line from head to heels. Engage your core and maintain the position without letting your hips sag.',
+    timer: true
   }
 ];
 

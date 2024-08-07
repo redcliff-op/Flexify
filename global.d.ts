@@ -100,7 +100,8 @@ type ChatMessage = {
 type WorkoutStepsInfo = {
   title: string,
   reps: string,
-  desc: string
+  desc: string,
+  timer?: boolean = false
 }
 
 type WorkoutDesc = {
