@@ -86,24 +86,24 @@ const performWorkouts = memo(() => {
           setProgress(progress + 1)
           return;
         }
-        if (progress === 4) {
+        if (progress === 5) {
           Speech.speak(
             `Voila! You just finished your ${workout.title} Workout! Think you can do more? Go ahead!`
           )
           setProgress(progress + 1)
           return;
         }
-        if (progress === 0 || progress === 5) {
+        if (progress === 0 || progress === 6) {
           setRest(false)
         } else {
           await beginRest()
         }
-        if (progress < 5) {
+        if (progress < 6) {
           Speech.speak("Lets Start " + workout.steps[progress].title)
           Speech.speak(workout.steps[progress].desc)
           Speech.speak("Click Done after the exercise")
           setProgress(progress + 1)
-        } else if (progress === 5) {
+        } else if (progress === 6) {
           setProgress(-1)
         }
         if(workout.steps[progress]?.timer === true){
@@ -162,7 +162,7 @@ const performWorkouts = memo(() => {
               </View>
             )}
             <View
-              style={{ borderWidth: (progress === 5) ? 3 : 0 }}
+              style={{ borderWidth: (progress === 6) ? 3 : 0 }}
               className='bg-background border-palelime mb-2 p-5 rounded-3xl'
             >
               <Text className='text-palelime text-lg '>End!</Text>
@@ -194,7 +194,7 @@ const performWorkouts = memo(() => {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: `${(progress / 5) * 100}%`,
+                width: `${(progress / 6) * 100}%`,
                 height: '100%',
                 backgroundColor: '#4CAF50',
                 borderRadius: 100,
@@ -207,7 +207,7 @@ const performWorkouts = memo(() => {
             layout={LinearTransition}
             className='text-lg p-5 font-bold text-black'
           >
-            {(progress === 5) ? (
+            {(progress === 6) ? (
               'Another Set?'
             ) : (
               (progress === 0 || progress === -1) ? (
