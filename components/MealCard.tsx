@@ -1,14 +1,16 @@
-import { Text, Image, Pressable, ImageBackground, View } from 'react-native'
+import { Text, Pressable, ImageBackground, View, ViewStyle, StyleProp } from 'react-native'
 import React, { useState } from 'react'
-import { Link, router } from 'expo-router'
+import { router } from 'expo-router'
 import Collapsible from 'react-native-collapsible'
 import { useStore } from '@/src/store/store'
+import { Meal } from '@/global'
 
 interface MealCardProps {
-  meal: Meal
+  meal: Meal,
+  style? : StyleProp<ViewStyle>
 }
 
-const MealCard = ({ meal }: MealCardProps) => {
+const MealCard = ({ meal, style }: MealCardProps) => {
 
   const [expanded, setExpanded] = useState<boolean>(false)
   const {fetchMealData} = useStore((state)=>({
@@ -26,8 +28,8 @@ const MealCard = ({ meal }: MealCardProps) => {
         borderRadius={20}
         source={{ uri: meal.strMealThumb }}
       >
-        <View className=' flex-1 justify-end'>
-          <View className='w-max bg-gray-900 px-2 py-3' style={{ backgroundColor: 'rgba(31, 41, 55, 0.85)' }}>
+        <View className='flex-1 justify-end' style={style}>
+          <View className=' rounded-b-[20] w-max bg-gray-900 px-2 py-3' style={{ backgroundColor: 'rgba(31, 41, 55, 0.85)' }}>
             <Text numberOfLines={1} className='mt-2 text-white text-center text- font-bold'>{meal.strMeal}</Text>
             <Collapsible collapsed={!expanded}>
               <Pressable

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, AppState, AppStateStatus, Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Alert, AppState, AppStateStatus, FlatList, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
 import { router } from 'expo-router';
@@ -8,10 +8,11 @@ import Animated, { FadeInLeft, FadeOutLeft, LinearTransition } from 'react-nativ
 import Collapsible from 'react-native-collapsible';
 import moment from 'moment';
 import { Activity, ExerciseData } from '@/global';
+import MealCard from '@/components/MealCard';
 
 const index = memo(() => {
 
-  const { userData, activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList, exerciseRecord } = useStore((state) => ({
+  const { meals, fetchIngred, userData, activity, userInfo, stopStepCounter, isExercising, currentExercise, updateDailyStats, activityList, exerciseRecord } = useStore((state) => ({
     activity: state.activity,
     userInfo: state.userInfo,
     startStepCounter: state.startStepCounter,
@@ -21,7 +22,9 @@ const index = memo(() => {
     updateDailyStats: state.updateDailyStats,
     activityList: state.activityList.toReversed(),
     exerciseRecord: state.exerciseRecord,
-    userData: state.userData
+    userData: state.userData,
+    meals: state.meals,
+    fetchIngred: state.fetchIngred
   }))
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
@@ -68,6 +71,10 @@ const index = memo(() => {
   useEffect(() => {
     setupExerciseStats();
   }, [isExercising]);
+
+  useEffect(() => {
+    fetchIngred("Salmon")
+  }, [])
 
   return (
     <SafeAreaView className='flex-1 bg-background px-2 py-2 align-middle'>
@@ -208,9 +215,9 @@ const index = memo(() => {
               </View>
             </View>
             <Pressable
-            onPress={()=>{
-              router.navigate(`/statGraphs`)
-            }}
+              onPress={() => {
+                router.navigate(`/statGraphs`)
+              }}
               className='flex-row justify-between bg-background rounded-full mt-5 py-3 px-5'>
               <Text className='text-lg text-palelime text-center'>
                 Past Record Graphs
@@ -314,6 +321,32 @@ const index = memo(() => {
               tintColor={'white'}
             />
           </View>
+        </View>
+        <View
+          className='bg-darkgray mt-2 py-5'
+          style={{ borderRadius: 40 }}
+        >
+          <View className='flex-row items-center justify-between'>
+            <Text className='text-white text-lg px-5'>Meals</Text>
+            <Pressable
+              onPress={()=>{
+                router.navigate(`/(tabs)/meals`)
+              }}
+            >
+              <Text className='text-palelime text-lg px-5'>View all</Text>
+            </Pressable>
+          </View>
+          <FlatList
+            className='m-2'
+            data={meals}
+            keyExtractor={(item) => item.strMealThumb}
+            renderItem={({ item }) => (
+              <MealCard meal={item} style={{aspectRatio:1}}/>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+          </FlatList>
         </View>
       </ScrollView>
     </SafeAreaView >
