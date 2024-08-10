@@ -27,6 +27,16 @@ A Cross Platform AI Powered Fitness App Built using React Native Expo and Gemini
 - Get workout plan
 - And alot more!
 
+# Screenshots
+![Login Screen](https://github.com/user-attachments/assets/98a637bb-2780-467b-83b1-e04d9cb9c6a2)
+![2](https://github.com/user-attachments/assets/f93abd9d-dbf0-4642-a432-08d4037c7bb0)
+![3](https://github.com/user-attachments/assets/f730129f-0bc4-4f41-98ae-07f67b7c29b8)
+![4](https://github.com/user-attachments/assets/f135909e-7d93-4e74-a908-bdd9b0503dc5)
+![5](https://github.com/user-attachments/assets/ca0f4359-bc97-4e16-a1ec-aae20bdc6bf2)
+![6](https://github.com/user-attachments/assets/ec53d21c-6ac1-4066-9cdb-c84189445f51)
+![7](https://github.com/user-attachments/assets/229114d6-2a9d-48ba-856a-b685b85806b9)
+![8](https://github.com/user-attachments/assets/e34f9591-fe09-4268-9a92-7889f5f79f47)
+
 # Underhood Implementation
 
 - React Native Expo ( TypeScript )
@@ -50,12 +60,3 @@ A Cross Platform AI Powered Fitness App Built using React Native Expo and Gemini
 
 Note - This app is only tested on Android, you are free to try it out on iOS and report the issues if any :)
 
-# Screenshots
-![Login Screen](https://github.com/user-attachments/assets/98a637bb-2780-467b-83b1-e04d9cb9c6a2)
-![2](https://github.com/user-attachments/assets/f93abd9d-dbf0-4642-a432-08d4037c7bb0)
-![3](https://github.com/user-attachments/assets/f730129f-0bc4-4f41-98ae-07f67b7c29b8)
-![4](https://github.com/user-attachments/assets/f135909e-7d93-4e74-a908-bdd9b0503dc5)
-![5](https://github.com/user-attachments/assets/ca0f4359-bc97-4e16-a1ec-aae20bdc6bf2)
-![6](https://github.com/user-attachments/assets/ec53d21c-6ac1-4066-9cdb-c84189445f51)
-![7](https://github.com/user-attachments/assets/229114d6-2a9d-48ba-856a-b685b85806b9)
-![8](https://github.com/user-attachments/assets/e34f9591-fe09-4268-9a92-7889f5f79f47)
