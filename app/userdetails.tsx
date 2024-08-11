@@ -51,7 +51,7 @@ const userdetails = memo(() => {
           <Text className='text-palelime text-lg mx-2'>Weight (Kgs)</Text>
           <View className="bg-darkgray my-1 h-[70] rounded-3xl px-5">
             <TextInput
-              value={weight}
+              value={(weight==='0')?'':weight}
               className='flex-1'
               onChangeText={setWeight}
               placeholder="Enter your Weight (KGs)"
@@ -64,7 +64,7 @@ const userdetails = memo(() => {
           <Text className='text-palelime text-lg mx-2'>Height (cms)</Text>
           <View className="bg-darkgray my-1 h-[70] rounded-3xl px-5">
             <TextInput
-              value={height}
+              value={(height==='0'?'':height)}
               className='flex-1'
               onChangeText={setHeight}
               placeholder="Enter your Height (CMs)"
