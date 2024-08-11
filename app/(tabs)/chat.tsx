@@ -18,6 +18,7 @@ const chat = memo(() => {
     userInfo: state.userInfo
   }))
 
+  const textInputRef = useRef(null);
   const [text, setText] = useState<string>("")
   const [image, setImage] = useState<string | null>(null)
   const [kbFocused, setKbFocused] = useState<boolean>(false)
@@ -28,6 +29,13 @@ const chat = memo(() => {
   }
 
   const animation = useRef(null)
+
+  const handleUnfocus = () => {
+    if (textInputRef.current) {
+      textInputRef.current.blur();
+      setKbFocused(false);
+    }
+  };
 
   return (
     <SafeAreaView className=' justify-between flex-1 px-4 bg-background'>
@@ -40,6 +48,7 @@ const chat = memo(() => {
           <Pressable
             onPress={() => {
               useStore.setState({ messages: [] })
+              handleUnfocus()
             }}
           >
             <Image
@@ -135,6 +144,7 @@ const chat = memo(() => {
             >
               <TextInput
                 className=' flex-initial mr-3 '
+                ref={textInputRef}
                 value={text}
                 onChangeText={setText}
                 placeholder='Chat with Your Virtual Fitness Coach!'
@@ -167,6 +177,7 @@ const chat = memo(() => {
                 getGeminiResponse(text, image)
                 setText("")
                 setImage(null)
+                handleUnfocus()
               }
             }}
           >
