@@ -16,6 +16,14 @@ const statGraphs = memo(() => {
     activityList: state.activityList
   }))
 
+  if(activityList.length<10){
+    return(
+      <View className='flex-1 bg-background justify-center items-center'>
+        <Text className='text-white text-center text-lg'>Atleast 10 days of progress is needed for graph View</Text>
+      </View>
+    )
+  }
+
   const calGraphData = useMemo(() => {
     return activityList.map((activity) => ({
       value: activity.caloriesBurnt,
