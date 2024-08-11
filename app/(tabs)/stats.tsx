@@ -54,16 +54,22 @@ const Stats = () => {
           </Text>
         </Pressable>
       </View>
-      <FlatList
-        className='mt-2'
-        data={filteredExerciseRecord}
-        keyExtractor={(item) => item.startTime?.toString()!!}
-        renderItem={({ item }) => (
-          <WorkoutRecordCard
-            exerciseData={item}
-          />
-        )}
-      />
+      {(filteredExerciseRecord.length > 0) ? (
+        <FlatList
+          className='mt-2'
+          data={filteredExerciseRecord}
+          keyExtractor={(item) => item.startTime?.toString()!!}
+          renderItem={({ item }) => (
+            <WorkoutRecordCard
+              exerciseData={item}
+            />
+          )}
+        />
+      ) : (
+        <View className='flex-1 justify-center items-center'>
+          <Text className='text-white text-base font-bold'>No Data Available</Text>
+        </View>
+      )}
     </SafeAreaView>
   )
 }

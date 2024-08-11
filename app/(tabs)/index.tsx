@@ -79,36 +79,42 @@ const index = memo(() => {
   return (
     <SafeAreaView className='flex-1 bg-background px-2 py-2 align-middle'>
       <Collapsible easing={'linear'} collapsed={!isExpanded} style={{ paddingVertical: 20, borderRadius: 40, backgroundColor: '#2D2D36' }}>
-        <Animated.FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={activityList}
-          className='mx-3'
+        {(activityList.length>0) ? (
+          <Animated.FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={activityList}
+            className='mx-3'
 
-          renderItem={({ item, index }) =>
-            <Pressable
-              onPress={() => {
-                setPastActivity(item)
-              }}
-              className='bg-black py-2 px-4 mx-1 rounded-3xl items-center'
-              style={{ backgroundColor: (pastActivity.date === item.date) ? '#D5FF5F' : 'black' }}
-            >
-              <Text
-                className='text-base'
-                style={{ color: (pastActivity.date === item.date) ? 'black' : 'white' }}
+            renderItem={({ item, index }) =>
+              <Pressable
+                onPress={() => {
+                  setPastActivity(item)
+                }}
+                className='bg-black py-2 px-4 mx-1 rounded-3xl items-center'
+                style={{ backgroundColor: (pastActivity.date === item.date) ? '#D5FF5F' : 'black' }}
               >
-                {daysOfWeek[new Date(item.date!!).getDay()]}
-              </Text>
-              <Text
-                className='text-base font-bold'
-                style={{ color: (pastActivity.date === item.date) ? 'black' : 'white' }}
-              >
-                {item.date?.slice(-2)}
-              </Text>
-            </Pressable>
-          }
-        >
-        </Animated.FlatList>
+                <Text
+                  className='text-base'
+                  style={{ color: (pastActivity.date === item.date) ? 'black' : 'white' }}
+                >
+                  {daysOfWeek[new Date(item.date!!).getDay()]}
+                </Text>
+                <Text
+                  className='text-base font-bold'
+                  style={{ color: (pastActivity.date === item.date) ? 'black' : 'white' }}
+                >
+                  {item.date?.slice(-2)}
+                </Text>
+              </Pressable>
+            }
+          >
+          </Animated.FlatList>
+        ) : (
+          <View >
+            <Text className='text-white font-bold text-center text-base'>No Past Data Available</Text>
+          </View>
+        )}
       </Collapsible>
       <ScrollView style={{ marginTop: isExpanded ? 10 : 0 }}>
         <Collapsible duration={600} easing={'linear'} collapsed={isExpanded}>
@@ -329,7 +335,7 @@ const index = memo(() => {
           <View className='flex-row items-center justify-between'>
             <Text className='text-white text-lg px-5'>Meals</Text>
             <Pressable
-              onPress={()=>{
+              onPress={() => {
                 router.navigate(`/(tabs)/meals`)
               }}
             >
@@ -341,7 +347,7 @@ const index = memo(() => {
             data={meals}
             keyExtractor={(item) => item.strMealThumb}
             renderItem={({ item }) => (
-              <MealCard meal={item} style={{aspectRatio:1}}/>
+              <MealCard meal={item} style={{ aspectRatio: 1 }} />
             )}
             horizontal
             showsHorizontalScrollIndicator={false}
