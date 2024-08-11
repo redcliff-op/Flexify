@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, AppState, AppStateStatus, FlatList, Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Alert, AppState, AppStateStatus, BackHandler, FlatList, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Progress from 'react-native-progress';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useStore } from '@/src/store/store';
 import Animated, { FadeInLeft, FadeOutLeft, LinearTransition } from 'react-native-reanimated';
 import Collapsible from 'react-native-collapsible';
@@ -75,6 +75,18 @@ const index = memo(() => {
   useEffect(() => {
     fetchIngred("Salmon")
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        return true;
+      };
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [])
+  );
 
   return (
     <SafeAreaView className='flex-1 bg-background px-2 py-2 align-middle'>

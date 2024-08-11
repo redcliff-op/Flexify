@@ -6,6 +6,7 @@ import LottieView from 'lottie-react-native'
 import Markdown from 'react-native-markdown-display'
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated'
 import Collapsible from 'react-native-collapsible'
+import { router } from 'expo-router'
 
 const userdetails = memo(() => {
 
@@ -197,6 +198,7 @@ const userdetails = memo(() => {
               }
             })
             setUserData()
+            router.back()
           }}
         >
           <Text className='text-black text-lg font-bold self-center'>Continue</Text>
