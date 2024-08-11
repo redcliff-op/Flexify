@@ -79,7 +79,7 @@ const index = memo(() => {
   return (
     <SafeAreaView className='flex-1 bg-background px-2 py-2 align-middle'>
       <Collapsible easing={'linear'} collapsed={!isExpanded} style={{ paddingVertical: 20, borderRadius: 40, backgroundColor: '#2D2D36' }}>
-        {(activityList.length>0) ? (
+        {(activityList.length > 0) ? (
           <Animated.FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -307,7 +307,12 @@ const index = memo(() => {
               tintColor={'white'}
             />
           </Pressable>
-          <View className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'>
+          <Pressable
+            onPress={() => {
+              Alert.alert('Coming Soon!','Work in progress feature')
+            }}  
+            className='p-2 mx-2 mt-1 justify-between bg-background rounded-full flex-row'
+          >
             <View className='flex-row'>
               <View className='rounded-full bg-black self-center p-3'>
                 <Image
@@ -326,7 +331,7 @@ const index = memo(() => {
               className='w-[25] h-[25] self-center'
               tintColor={'white'}
             />
-          </View>
+          </Pressable>
         </View>
         <View
           className='bg-darkgray mt-2 py-5'
