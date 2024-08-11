@@ -131,12 +131,13 @@ const chat = memo(() => {
             <Animated.View
               entering={FadeIn}
               exiting={FadeOut}
-              className='px-5 mr-2 py-2.5 items-center justify-between flex-row flex-auto border-palelime border-2 rounded-full'
+              className='px-5 mr-2 py-2.5 items-center justify-between flex-row flex-1 border-palelime border-2 rounded-full'
             >
               <TextInput
+                className=' flex-initial mr-3 '
                 value={text}
                 onChangeText={setText}
-                placeholder='Ask Flexify AI!'
+                placeholder='Chat with Your Virtual Fitness Coach!'
                 placeholderTextColor={'#CBD5E0'}
                 style={{ color: 'white' }}
                 onFocus={() => {
